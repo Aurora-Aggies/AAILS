@@ -1,2 +1,2 @@
 # AAILS
-Aurora Aggies' Intelligent Lighting System
+Aurora Aggies' ILS
