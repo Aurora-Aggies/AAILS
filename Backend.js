@@ -12,15 +12,19 @@ var rooms = [];
 	rooms.push(room1);
 
 	// Room 2
-	var Temperatures1 = [2700, 2700, 2700, 2700, 2700, 2700, 2700];
-	var Lumens1 = [1700, 1700, 1700, 1700, 1700, 1700, 1700];
-	var Percentages1 = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.4];
+	var Temperatures2 = [2700, 2700, 2700, 2700, 2700, 2700, 2700];
+	var Lumens2 = [1700, 1700, 1700, 1700, 1700, 1700, 1700];
+	var Percentages2 = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.4];
 
 
-	let room1 = new Room(1, Temperatures1, Lumens1, Percentages1);
+	let room2 = new Room(2, Temperatures2, Lumens2, Percentages2);
 	rooms.push(room2);
 
 /* ------------- */
+
+
+var myStr = JSON.stringify(room1);	// convert JSON to string
+
 
 /*var EMAIL = "ALYSSA";
 
