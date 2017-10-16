@@ -1,0 +1,3 @@
+Room 1 - kitchen
+Room 2 - living room
+Room 3 - second kitchen
