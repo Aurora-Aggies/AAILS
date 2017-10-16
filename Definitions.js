@@ -15,6 +15,8 @@
 		this.lumensValues[index] = newLumen;
 	}
 
+
+module.exports = Room;
 /* ---------- */	
 
 

@@ -1,3 +1,7 @@
+/***************************** Prerequisites *****************************/
+var Room = require("./Definitions.js");
+
+/***************************** Global Variables *****************************/
 var rooms = [];
 
 /***************************** Creating Rooms *****************************/
@@ -23,7 +27,7 @@ var rooms = [];
 /***************************** Http Requests *****************************/
 
 var myStr = JSON.stringify(room1);	// convert JSON to string
-
+console.log(myStr);
 
 /*var EMAIL = "ALYSSA";
 
