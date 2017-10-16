@@ -1,40 +1,45 @@
 #include "aails.h"
 #include <ArduinoJson.h>
+#include <avr/pgmspace.h>
 
-System * sys;
+boolean ini = true; //Bool for initialization only
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
-  System temp = System(5);
-  sys = &temp;
-  sys->getRoom(0)->set(6500,25);
-  
+  Serial.begin(9600); //Initializes Serial Communications
+  Serial.println(freeRam()); //Prints available ram upon startup
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0){
-    //Serial.println("Hello");
-    int n = Serial.parseInt();
-    Serial.println(n);
-    if (n == 0) sys->getRoom(n)->set(6500,25);
-    if (n == 1) sys->getRoom(n)->set(5000,50);
-    if (n == 2) sys->getRoom(n)->set(7000,25);
-    if (n == 3) sys->getRoom(n)->set(1500,50);
-    if (n == 4) sys->getRoom(n)->set(2500,50);
-    if (n == 5){
-      const char r [] PROGMEM = "{\"Cycles\":[{\"ID\":\"Sunset\",\"Temperature\":2700,\"Lumens\":1500,\"Percentage\":0.1},{\"ID\":\"Dawn\",\"Temperature\":3500,\"Lumens\":1700,\"Percentage\":0.1},{\"ID\":\"Overcast\",\"Temperature\":5000,\"Lumens\":2000,\"Percentage\":0.1},{\"ID\":\"Daylight\",\"Temperature\":6000,\"Lumens\":2200,\"Percentage\":0.1},{\"ID\":\"MidAfternoon\",\"Temperature\":4200,\"Lumens\":1900,\"Percentage\":0.1},{\"ID\":\"Dusk\",\"Temperature\":3500,\"Lumens\":1700,\"Percentage\":0.1},{\"ID\":\"Night\",\"Temperature\":2200,\"Lumens\":20,\"Percentage\":0.4}],\"HoursPerDay\":24}";
-      StaticJsonBuffer<600> jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(r);
-      if (!root.success()) {
-        Serial.println("parseObject() failed");
-      } else {
-      const char* p = root["Cycles"][0]["ID"];
-      Serial.println(p);
+      char r [] ="{\"Cycles\":[{\"T\":2700,\"L\":50,\"P\":10},{\"T\":3500,\"L\":80,\"P\":10},{\"T\":5000,\"L\":90,\"P\":10},{\"T\":6000,\"L\":100,\"P\":10},{\"T\":4200,\"L\":75,\"P\":10},{\"T\":3500,\"L\":50,\"P\":10},{\"T\":2200,\"L\":20,\"P\":40}]}";
+      StaticJsonBuffer<500> jsonBuffer; //Buffer to hold Json objects
+      JsonObject& root = jsonBuffer.parseObject(r); //Parses JsonObject
+      RoomClass room = RoomClass(); //Creates and initializes room
+      if (root.success() && ini) {
+        int t [7]; //Stores color temps for daily cycle
+        int b[7]; //Stores intensity of temp for daily cycle
+        int d[7]; //Stores duration of temp for daily cycle
+        for (byte i = 0; i < 7; i++){
+          //Sets values
+          t[i] = root["Cycles"][i]["T"];
+          b[i] = root["Cycles"][i]["L"];
+          d[i] = root["Cycles"][i]["P"];
+        }
+        room.initCycle(t,b,d); //Initializes the cycle with these values
+        ini = false; //Don't run through initalization again
+      }else {
+        room.cycle(); //Runs next phase of cycle every call
       }
-    }
-    sys->switchTo(n);
-  }
+   }
+}
 
+
+int freeRam () 
+{
+  //Prints available SRAM
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }

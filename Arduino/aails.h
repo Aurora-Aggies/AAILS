@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "tempcolor.h"
 #include <Adafruit_NeoPixel.h>
+#include <avr/pgmspace.h>
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
@@ -14,25 +15,20 @@
 #define NUMPIXELS      60
 
 class RoomClass{
-	int id;
-	int px;
-	Adafruit_NeoPixel light = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+	PROGMEM Adafruit_NeoPixel light = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+	int * t; //Stores temps
+	int * br; //Stores brightnesses
+	int * day; //Stores percentages of the day
+	int currentPhase; //Stores the current phase
 	
 	public:
 	RoomClass();
-	void show();
-	void set(int tc, int br);
-	void off();
-};
-
-class System {
-	RoomClass * rooms;
-	int numOfRooms = 0;
-	
-	public:
-	System(int);
-	void switchTo(int r);
-	RoomClass * getRoom (int r);
+	void showPhase(int num); //Shows current phase
+	void set(int tc, int br); //Sets to certain temp and brightness
+	void off(); //turns lights off
+	void printAll(); //prints all cycle values
+	void initCycle(int tmp [], int bright [], int perc []); //initializes the cycle
+	void cycle(); //Goes to next phase in cycle (Call consecutively if possible)
 };
 
 #endif
