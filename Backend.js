@@ -1,6 +1,6 @@
 var rooms = [];
 
-/* Creating Rooms */
+/***************************** Creating Rooms *****************************/
 
 	// Room 1
 	var Temperatures1 = [2700, 3500, 5000, 6000, 4200, 3500, 2200];
@@ -20,8 +20,7 @@ var rooms = [];
 	let room2 = new Room(2, Temperatures2, Lumens2, Percentages2);
 	rooms.push(room2);
 
-/* ------------- */
-
+/***************************** Http Requests *****************************/
 
 var myStr = JSON.stringify(room1);	// convert JSON to string
 

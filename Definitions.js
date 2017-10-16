@@ -11,6 +11,10 @@
 		this.tempValues[index] = newTemp;
 	}
 
+	Room.prototype.changeLumensValueAtIndex = function (index, newLumen){
+		this.lumensValues[index] = newLumen;
+	}
+
 /* ---------- */	
 
 
