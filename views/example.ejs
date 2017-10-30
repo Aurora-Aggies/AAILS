@@ -5,7 +5,7 @@
 	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Light Bootstrap Dashboard by Creative Tim</title>
+	 <head><title><%= title %></title></head>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -33,7 +33,7 @@
     <div class="sidebar" data-color="blue">
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="#" class="simple-text"><i class="pe-7s-home"></i> Home</a>
+                <a href="dashboard.html" class="simple-text"><i class="pe-7s-home"></i> Home</a>
                
             </div>
 
@@ -79,7 +79,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Welcome Back</h4>
+                                <h4 class="title">Welcome Back <%= user%>;</h4>
                                 <p class="category">Click on a room to view or modify.</p>
                             </div>
                             <div class="content">
