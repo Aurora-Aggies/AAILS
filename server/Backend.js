@@ -1,5 +1,8 @@
 /***************************** Prerequisites *****************************/
 var Room = require("./Definitions.js");
+const express = require('express')
+const bodyParser = require('body-parser');
+const app = express()
 
 /***************************** Global Variables *****************************/
 var rooms = [];
@@ -26,10 +29,6 @@ var rooms = [];
 
 /***************************** Http Requests *****************************/
 
-var myStr = JSON.stringify(room1);	// convert JSON to string
-console.log(myStr);
-
-
 /*
 Inside /server
 run:
@@ -41,13 +40,9 @@ run:
 to start: node Backend.js
 */
 
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser');	
 app.set('view engine', 'ejs')				//sets EJS as templating language in /views
 app.use(express.static('public'));			//gives access to /public for access to CSS files
 app.use(bodyParser.urlencoded({ extended: true }));	//for parsing of request body
-
 
 app.get('/', function (req, res) {
   res.render('index', {weather: null, error: null});
@@ -77,16 +72,3 @@ app.post('/', function (req, res) {
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
-
-/*var EMAIL = "ALYSSA";
-
-function SendText()
-{
-    nocache = "&nocache=" + Math.random() * 1000000;
-    var request = new XMLHttpRequest();
-    
-    strText = "&txt=" + EMAIL + "&end=end";
-    
-    request.open("GET", "ajax_inputs" + strText + nocache, true);
-    request.send(null);
-}*/
