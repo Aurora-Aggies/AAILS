@@ -8,5 +8,18 @@
     "body-parser": "^1.18.2",
     "express": "latest",
     "ejs": "^2.4.1"
-  }
+  },
+  "description": "Aurora Aggies' ILS",
+  "main": "Database.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aurora-Aggies/AAILS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aurora-Aggies/AAILS/issues"
+  },
+  "homepage": "https://github.com/Aurora-Aggies/AAILS#readme"
 }
