@@ -13,18 +13,20 @@ var rooms = [];
 	var Temperatures1 = [2700, 3500, 5000, 6000, 4200, 3500, 2200];
 	var Lumens1 = [1500, 1700, 2000, 2200, 1900, 1700, 20];
 	var Percentages1 = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.4];
+	var Brightness1 = 1.0;
+	var Compensation1 = [0.0, 0.0, 0.0];
 
-
-	let room1 = new Room(1, Temperatures1, Lumens1, Percentages1);
+	let room1 = new Room(1, Temperatures1, Lumens1, Percentages1, Brightness1, Compensation1);
 	rooms.push(room1);
 
 	// Room 2
 	var Temperatures2 = [2700, 2700, 2700, 2700, 2700, 2700, 2700];
 	var Lumens2 = [1700, 1700, 1700, 1700, 1700, 1700, 1700];
 	var Percentages2 = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.4];
+	var Brightness2 = 0.8;
+	var Compensation2 = [0.0, 0.0, 0.0];
 
-
-	let room2 = new Room(2, Temperatures2, Lumens2, Percentages2);
+	let room2 = new Room(2, Temperatures2, Lumens2, Percentages2, Brightness2, Compensation2);
 	rooms.push(room2);
 
 /***************************** Http Requests *****************************/
@@ -52,6 +54,9 @@ app.post('/', function (req, res) {
   let city = req.body.city;
   let errStr = 'Error, please try again ' + city;
   res.render('index', {weather: null, error: errStr});
+  
+  //INFO FROM SENSOR
+  
   /*let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`
 
   request(url, function (err, response, body) {
