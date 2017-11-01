@@ -1,12 +1,16 @@
 /* Type: Room */
 
-	function Room(ID, tempValues, lumensValues, startValues, endValues, brightness){
+	function Room(ID, tempValues, lumensValues, startValues, endValues, brightness, correctedLumens){
 		this.ID = ID;
 		this.tempValues = tempValues;
 		this.lumensValues = lumensValues;
 		this.startValues = startValues;
 		this.endValues = endValues;
 		this.brightness = brightness;
+		this.correctedLumens = correctedLumens;
+		
+		this.brightnessChanged = true;
+		this.roomChanged = false;
 	}
 
 	Room.prototype.changeTempValueAtIndex = function (index, newTemp){
@@ -25,8 +29,16 @@
 		this.endValues[index] = newEnd;
 	}
 	
-	Room.prototype.changeBrightness = function (index, newBright){
+	Room.prototype.changeBrightness = function (newBright){
 		this.brightness = newBright;
+	}
+	
+	Room.prototype.changeBrightnessChanged = function (newChanged){
+		this.brightnessChanged = newChanged;
+	}
+	
+	Room.prototype.changeRoomChanged = function (newChanged){
+		this.roomChanged = newChanged;
 	}
 	
 

@@ -6,7 +6,13 @@ var router = express.Router();
 var database = require(__dirname + '/Database.js');
 var path = __dirname + '/views/';
 
+//for parsing of request body
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));	
+
 app.use(express.static(path));
+
+/***************************** Interface Requests *****************************/
 
 // ejs
 //app.engine('ejs', require('ejs').renderFile);
@@ -48,6 +54,84 @@ app.get('/room/:id', function(req, res){
 			numOfRooms: database.rooms.length});
 	}
 });
+
+//receives 
+app.post('/new-brightness', function(req, res){
+	let i = req.body.room;
+	let b = req.body.brightness;
+	database.rooms[i-1].changeBrightness(b.parseInt());
+	
+	//brightness has been changed since last ping
+	database.rooms[i-1].changeBrightnessChanged(true);
+	
+	res.send("Success");
+});
+
+/***************************** Arduino Requests *****************************/
+
+//returns current hour 0-23 (concatenated, not rounded)
+app.get('/current-time', function(req, res){
+	let date = new Date();
+	let current_hour = date.getHours();
+	res.send(current_hour.toString());
+});
+
+//indicates whether the brightness has been changed since last ping
+app.get('/changed-brightness', function(req, res){
+	let i = req.query.r;
+	res.send(database.rooms[i-1].brightnessChanged.toString());
+});
+
+//returns current brightness 0-255
+//0 is brightest
+//1 is dimmest
+//255 is second-brightest
+app.get('/current-brightness', function(req, res){
+	let i = req.query.r;
+	let b = database.rooms[i-1].brightness;
+	
+	//modulo to keep in bounds and to make 256 go to 0
+	res.send((b % 256).toString());
+	
+	//brightness has no longer been changed since last ping
+	database.rooms[i-1].changeBrightnessChanged(false);
+});
+
+//indicates whether the room has been changed since last ping
+app.get('/changed-room', function(req, res){
+	let i = req.query.r;
+	res.send(database.rooms[i-1].roomChanged.toString());
+});
+
+//returns current room object
+app.get('/current-room', function(req, res){
+	let i = req.query.r;
+	let room = JSON.stringify({	T:database.rooms[i-1].tempValues, 
+								L:database.rooms[i-1].lumensValues, 
+								S:database.rooms[i-1].startValues, 
+								E:database.rooms[i-1].endValues});
+	res.send(room);
+	
+	//room has no longer been changed since last ping
+	database.rooms[i-1].changeRoomChanged(false);
+});
+
+/***************************** Sensor Requests *****************************/
+
+app.post('/', function (req, res) {
+	
+	//convert lumens to rgb
+	//find current cycle
+	//for each phase in cycle
+		//convert desired lumens to desired rgb
+		//add difference from current rgb to give corrected rgb
+		//convert corrected rgb to corrected lumens
+		//update corrected lumens variable
+
+	//update change variable
+	
+})
+
 
 // body parser
 /*var bodyParser = require('body-parser');

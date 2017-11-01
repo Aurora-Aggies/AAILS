@@ -14,7 +14,7 @@ var phases = ["Sunset", "Dawn", "Overcast", "Daylight", "Mid-Afternoon", "Dusk",
 	var End1 = [3, 6, 9, 12, 15, 18, 22];
 	var Brightness1 = 256;
 
-	let room1 = new Room(1, Temperatures1, Lumens1, Start1, End1, Brightness1);
+	let room1 = new Room(1, Temperatures1, Lumens1, Start1, End1, Brightness1, Lumens1);
 	rooms.push(room1);
 
 	// Room 2
@@ -24,7 +24,7 @@ var phases = ["Sunset", "Dawn", "Overcast", "Daylight", "Mid-Afternoon", "Dusk",
 	var End2 = [3, 6, 9, 12, 15, 18, 22];
 	var Brightness2 = 140;
 
-	let room2 = new Room(2, Temperatures2, Lumens2, Start2, End2, Brightness2);
+	let room2 = new Room(2, Temperatures2, Lumens2, Start2, End2, Brightness2, Lumens2);
 	rooms.push(room2);
 
 /***************************** Http Requests *****************************/
