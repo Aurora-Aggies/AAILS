@@ -30,7 +30,7 @@ var phases = ["Sunset", "Dawn", "Overcast", "Daylight", "Mid-Afternoon", "Dusk",
 /***************************** Http Requests *****************************/
 
 var myStr = JSON.stringify(room1);	// convert JSON to string
-console.log(myStr);
+//console.log(myStr);
 
 
 

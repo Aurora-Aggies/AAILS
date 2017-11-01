@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
+<head>
     <% include partials/head %>
+</head>
 <body>
  <% include partials/navbar %>
- 
      <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -20,16 +21,19 @@
                                     <th>Phase</th>
                                     <th>Temperature</th>
                                     <th>Lumens</th>
-                                    <th>Percentage</th>
+                                    <th>Start Time</th>
+                                    <th>Stop Time</th>
                                 </thead>
                                 <tbody>
                                     <% for (var i = 0; i < room.tempValues.length; i++) { %>
                                         <tr>
-                                            <td><%= i + 1 %></td>
+                                            <td><%= room.ID %></td>
                                             <td><%= phases[i] %></td>
                                             <td><%= room.tempValues[i] %></td>
                                             <td><%= room.lumensValues[i] %></td>
-                                            <td><%= room.percentageValues[i] %></td>
+                                            <td><%= room.startValues[i] %></td>
+                                            <td><%= room.endValues[i] %></td>
+                                            <td><%= room.brightness %></td>
                                         </tr>
                                     <% } %>
                                 </tbody>

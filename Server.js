@@ -13,11 +13,40 @@ app.use(express.static(path));
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res){ 
- 	res.render(path + 'index', {name: "Adminstrator Dashboard"});
+ 	res.render(path + 'index', {
+ 		name: "Adminstrator Dashboard", 
+ 		numOfRooms: database.rooms.length});
 });
 
-app.get('/room1', function(req, res){ 
- 	res.render(path + 'room1', {name: "Room 1", room: database.rooms[0], phases: database.phases});
+app.get('/room/:id', function(req, res){ 
+
+	var reqID = req.params.id;
+
+	// get rid of the ":" from the parameter of the req
+	if(reqID.charAt(0) === ':')
+	{
+		reqID = reqID.slice( 1 );
+	}
+
+	var indexOfRoom = parseInt(reqID) - 1;
+
+	// making sure we are getting something that exists 
+	if(indexOfRoom < 0 || indexOfRoom >= database.rooms.length)
+	{
+		res.render(path + 'error', {
+			name: "ERROR", 
+			errorCode: "Not a valid room!"});
+	}
+	else
+	{
+		var title = "Room " + reqID;
+		console.log("INDEX: " + indexOfRoom);
+		res.render(path + 'room', {
+			name: title, 
+			room: database.rooms[indexOfRoom], 
+			phases: database.phases, 
+			numOfRooms: database.rooms.length});
+	}
 });
 
 // body parser
