@@ -55,7 +55,7 @@ app.get('/room/:id', function(req, res){
 	}
 });
 
-//receives 
+//receives brightness value from webpage
 app.post('/new-brightness', function(req, res){
 	let i = req.body.room;
 	let b = req.body.brightness;
@@ -84,8 +84,8 @@ app.get('/changed-brightness', function(req, res){
 
 //returns current brightness 0-255
 //0 is brightest
-//1 is dimmest
 //255 is second-brightest
+//1 is dimmest
 app.get('/current-brightness', function(req, res){
 	let i = req.query.r;
 	let b = database.rooms[i-1].brightness;
@@ -132,11 +132,7 @@ app.post('/', function (req, res) {
 	
 })
 
-
-// body parser
-/*var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));	//for parsing of request body
-
+/*
 router.get("/",function(req,res){
   res.sendFile(path + "dashboard.html");
 });
@@ -146,8 +142,8 @@ router.get("/room1",function(req,res){
 
 });
 
-
-app.use("/",router);*/
+app.use("/",router);
+*/
 
 app.listen(3000,function(){
   console.log("Live at Port 3000");
