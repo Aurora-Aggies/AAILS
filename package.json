@@ -6,8 +6,9 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "latest",
-    "ejs": "^2.4.1"
+    "color-temp": "0.0.2",
+    "ejs": "^2.4.1",
+    "express": "latest"
   },
   "description": "Aurora Aggies' ILS",
   "main": "Database.js",

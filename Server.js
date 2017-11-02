@@ -8,7 +8,10 @@ var path = __dirname + '/views/';
 
 //for parsing of request body
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));	
+app.use(bodyParser.urlencoded({ extended: true }));
+
+//for color temperature conversions
+var colorTemp = require('color-temp');	
 
 app.use(express.static(path));
 
@@ -106,7 +109,7 @@ app.get('/changed-room', function(req, res){
 //returns current room object
 app.get('/current-room', function(req, res){
 	let i = req.query.r;
-	let room = JSON.stringify({	T:database.rooms[i-1].tempValues, 
+	let room = JSON.stringify({	T:database.rooms[i-1].correctedTempValues, 
 								L:database.rooms[i-1].lumensValues, 
 								S:database.rooms[i-1].startValues, 
 								E:database.rooms[i-1].endValues});
@@ -118,19 +121,80 @@ app.get('/current-room', function(req, res){
 
 /***************************** Sensor Requests *****************************/
 
-app.post('/', function (req, res) {
+app.post('/sensor-data', function (req, res) {
+	let i = req.body.r;
+	let r1 = req.body.red;
+	let g1 = req.body.green;
+	let b1 = req.body.blue;
 	
-	//convert lumens to rgb
-	//find current cycle
-	//for each phase in cycle
-		//convert desired lumens to desired rgb
+	//TODO: add brightness and threshold
+	
+	//find currently desired temperature in cycle
+	let date = new Date();
+	let current_hour = date.getHours();
+	let t3;
+	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
+		if (current_hour >= database.rooms[i-1].startValues[x]) {
+			t3 = database.rooms[i-1].tempValues[x];
+			break;
+		}
+	}
+	
+	console.log(t3);
+	
+	//Calculate rgb difference
+	let rgb3 = colorTemp.temp2rgb(t3);
+	let r2 = rgb3[0] - r1;
+	let g2 = rgb3[1] - g1;
+	let b2 = rgb3[2] - b1;
+	
+	console.log(rgb3);
+	console.log(colorTemp.rgb2temp([r2, g2, b2]));
+	
+	//for each phase in the cycle
+	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
+		//convert desired temperature to desired rgb
+		let rgbx = colorTemp.temp2rgb(database.rooms[i-1].tempValues[x]);
+		let rx = rgbx[0];
+		let gx = rgbx[1];
+		let bx = rgbx[2];
+		
 		//add difference from current rgb to give corrected rgb
-		//convert corrected rgb to corrected lumens
-		//update corrected lumens variable
-
-	//update change variable
+		rgbx[0] = rx + r2;
+		rgbx[1] = bx + b2;
+		rgbx[2] = gx + g2;
+		
+		//adjust for bounds 
+		if (rgbx[0] > 255) {
+			rgbx[0] = 255;
+		} else if (rgbx[0] < 0) {
+			rgbx[0] = 0;
+		}
+		if (rgbx[1] > 255) {
+			rgbx[1] = 255;
+		} else if (rgbx[1] < 0) {
+			rgbx[1] = 0;
+		}
+		if (rgbx[2] > 255) {
+			rgbx[2] = 255;
+		} else if (rgbx[2] < 0) {
+			rgbx[2] = 0;
+		}
+		
+		//convert corrected rgb to corrected temperature and update variable
+		console.log(colorTemp.rgb2temp(rgbx));
+		database.rooms[i-1].changeCorrectedTempValueAtIndex(x, colorTemp.rgb2temp(rgbx));
+	}
+	
+	//room has been changed since last ping
+	database.rooms[i-1].changeRoomChanged(true);
 	
 })
+
+//simulator for testing
+app.get('/sensor-simulator', function(req, res){ 
+ 	res.render(path + 'sensor-simulator');
+});
 
 /*
 router.get("/",function(req,res){
