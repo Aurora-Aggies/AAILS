@@ -17,7 +17,7 @@ class RoomClass{
 	public:
 	void initCycle(int tmp [], int bright [], byte st [], byte ed [], byte sz); //initializes the cycle
 	void cycle(byte hour); //Goes to next phase in cycle (Call consecutively if possible)
-	void printAll();
+	//void printAll();
 };
 
 #endif

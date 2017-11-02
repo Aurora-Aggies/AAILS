@@ -24,9 +24,9 @@ void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
     StaticJsonBuffer<1000> jsonBuffer; //Buffer to hold Json objects
     JsonObject& root = jsonBuffer.parseObject(c); //Parses JsonObject
     if (root.success()) {
-		Serial.println("Success");
+		//Serial.println("Success");
 		byte sz = root["Cycles"].size(); //Stores how many cycles we need
-		Serial.println(c);
+		//Serial.println(c);
 		int t[sz]; //Stores color temps for daily cycle
 		int b[sz]; //Stores intensity of temp for daily cycle
 		byte s[sz]; //Stores start times 
@@ -61,15 +61,15 @@ void getBrightChange(EthernetClient client){
     }
     if (!client.connected()){
         String command = parseRequest(rs);
-        if (command.equals("True"))
-			Serial.println("Yay!");
+        //if (command.equals("True"))
+			//Serial.println("Yay!");
      }
 }
 
 void computeRoom(String r, RoomClass &rc){
 	StaticJsonBuffer<1000> jsonBuffer; //Buffer to hold Json objects
     JsonObject& root = jsonBuffer.parseObject(r); //Parses JsonObject
-	Serial.println(r);
+	//Serial.println(r);
 	if (root.success()){
 		byte sz = root["Cycles"].size(); //Stores how many cycles we need
 		int t[sz]; //Stores color temps for daily cycle
@@ -85,9 +85,9 @@ void computeRoom(String r, RoomClass &rc){
 		RoomClass room; //Creates room
 		room.initCycle(t,b,s,e,sz); //Initializes the cycle with these values
 		rc = room;
-	} else {
+	} /*else {
 		Serial.println("JSON parsing failed");
-	}
+	}*/
 }
 
 int freeRam () 

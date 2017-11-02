@@ -21,11 +21,11 @@ void setup() {
   // put your setup code here, to run once:
   hour = 0;
   start_time = 0;
-  Serial.begin(9600); //Initializes Serial Communications
-  while (!Serial){
+  //Serial.begin(9600); //Initializes Serial Communications
+  /*while (!Serial){
     ; //Wait for Serial to connect
-  }
-  Serial.println(freeRam()); //Prints available ram upon startup
+  }*/
+  //Serial.println(freeRam()); //Prints available ram upon startup
   
   if (EEPROM.read(0) == 1){
     roomOn = true;
@@ -41,21 +41,21 @@ void setup() {
 
   //Start Ethernet Connection
   if (Ethernet.begin(mac) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
+    //Serial.println("Failed to configure Ethernet using DHCP");
     // try to congifure using IP address instead of DHCP:
     Ethernet.begin(mac, ip);
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
-  Serial.println("connecting...");
+  //Serial.println("connecting...");
   
   if (client.connect(server, 8080)) {
     //Lets set a universal booelean here
-    Serial.println("connected");
+    //Serial.println("connected");
     conn = true;
   } else {
     // if you didn't get a connection to the server:
-    Serial.println("connection failed");
+    //Serial.println("connection failed");
     return (0);
   }
 }
@@ -70,7 +70,7 @@ void loop() {
     start_time = millis();
     hour += elapse/10000;
     if (hour > 24)
-      hour = 0;
+      hour = 1;
     if (roomOn){
       mainRoom.cycle(hour);
       //mainRoom->printAll();
