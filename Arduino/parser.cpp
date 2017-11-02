@@ -24,9 +24,7 @@ void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
     StaticJsonBuffer<1000> jsonBuffer; //Buffer to hold Json objects
     JsonObject& root = jsonBuffer.parseObject(c); //Parses JsonObject
     if (root.success()) {
-		//Serial.println("Success");
 		byte sz = root["Cycles"].size(); //Stores how many cycles we need
-		//Serial.println(c);
 		int t[sz]; //Stores color temps for daily cycle
 		int b[sz]; //Stores intensity of temp for daily cycle
 		byte s[sz]; //Stores start times 
@@ -43,51 +41,33 @@ void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
 
 		bs = true; //change boolean so we know RoomClass is initialized
 		EEPROM.update(0,1); //EEPROM store bool above
-		EEPROM.put(1,c.length() + 3); //EEPROM  store JSON string size
-		for (int i = 3; i < c.length() + 3; i++)
-			EEPROM.update(i,c.charAt(i-3)); //EEPROM JSON string
+		EEPROM.put(2,sizeof(room)); //EEPROM  store JSON string size
+		EEPROM.put(4,room); //EEPROM store room class
     }
 }
 
-void getBrightChange(EthernetClient client){
+boolean getBrightChange(EthernetClient client, IPAddress server){
 	String rs;
 	client.println("GET /change-brightness.html HTTP/1.1");
     client.println("Host: www.google.com");
-    client.println("Connection: close");
+	client.println("Connection: close");
     client.println();
+
     while (client.available() > 0){
         char g = client.read();
         rs += g;
     }
     if (!client.connected()){
         String command = parseRequest(rs);
-        //if (command.equals("True"))
-			//Serial.println("Yay!");
-     }
-}
-
-void computeRoom(String r, RoomClass &rc){
-	StaticJsonBuffer<1000> jsonBuffer; //Buffer to hold Json objects
-    JsonObject& root = jsonBuffer.parseObject(r); //Parses JsonObject
-	//Serial.println(r);
-	if (root.success()){
-		byte sz = root["Cycles"].size(); //Stores how many cycles we need
-		int t[sz]; //Stores color temps for daily cycle
-		int b[sz]; //Stores intensity of temp for daily cycle
-		byte s[sz]; //Stores start times 
-		byte e[sz]; //Stores end times 
-		for (byte i = 0; i < sz; i++){ //Sets values
-			t[i] = root["Cycles"][i]["T"];
-			b[i] = root["Cycles"][i]["L"];
-			s[i] = root["Cycles"][i]["S"];
-			e[i] = root["Cycles"][i]["E"];
+        if (command.equals("True")){
+			Serial.println("Yeah");
+			return true;
 		}
-		RoomClass room; //Creates room
-		room.initCycle(t,b,s,e,sz); //Initializes the cycle with these values
-		rc = room;
-	} /*else {
-		Serial.println("JSON parsing failed");
-	}*/
+		else {
+			return false;
+		}
+		client.connect(server, 8080);
+    }
 }
 
 int freeRam () 

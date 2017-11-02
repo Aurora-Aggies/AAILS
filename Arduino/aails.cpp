@@ -24,9 +24,12 @@ void RoomClass::initCycle(int tmp [], int bright [], byte st [], byte ed [], byt
 void RoomClass::cycle(byte hour){
     //Serial.println(hour);
 	byte ec = end[currentPhase];
-	if (hour == ec){
+	if (hour >= ec){
 		//Serial.println("Switch");
-		currentPhase++;
+		while(hour >= ec){
+			currentPhase++;
+			ec = end[currentPhase];
+		}
 		if (currentPhase >= size) currentPhase = 0;
 		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 		light.begin();
