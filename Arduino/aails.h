@@ -7,17 +7,16 @@
 #define AAILS_H
 
 class RoomClass{
-	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
-	int * t; //Stores temps
-	int * br; //Stores brightnesses
-	int * day; //Stores percentages of the day
-	int * start;
-	int * end;
+	int t [24]; //Stores temps
+	int br [24]; //Stores brightnesses
+	byte start [24];
+	byte end [24];
+	byte size;
 	byte currentPhase; //Stores the current phase
 	
 	public:
-	void initCycle(int tmp [], int bright [], int perc [], int st [], int ed []); //initializes the cycle
-	void cycle(int hour); //Goes to next phase in cycle (Call consecutively if possible)
+	void initCycle(int tmp [], int bright [], byte st [], byte ed [], byte sz); //initializes the cycle
+	void cycle(byte hour); //Goes to next phase in cycle (Call consecutively if possible)
 	void printAll();
 };
 

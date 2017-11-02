@@ -10,7 +10,7 @@
 boolean conn = false;
 boolean roomOn = false;
 unsigned long start_time;
-int hour;
+byte hour;
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
 RoomClass mainRoom;
 IPAddress server(192, 168, 137, 1);
@@ -36,7 +36,7 @@ void setup() {
       char c = EEPROM.read(i);
       m += c;
     }
-    //mainRoom = computeRoom(m);
+    computeRoom(m,mainRoom);
   }
 
   //Start Ethernet Connection
@@ -72,7 +72,7 @@ void loop() {
     if (hour > 24)
       hour = 0;
     if (roomOn){
-      //mainRoom.cycle(hour);
+      mainRoom.cycle(hour);
       //mainRoom->printAll();
     }
   }
@@ -80,10 +80,6 @@ void loop() {
     // Make a HTTP request:
     //Example of different GETS client.println("GET /changed-brightness?r=1 HTTP/1.1");
     //getBrightChange(client);
-    RoomClass * helper = new RoomClass();
-    *helper = getRoom(client,roomOn, *helper);
-    helper->printAll();
-    //mainRoom = *helper;
-    //mainRoom.printAll();
+    if (!roomOn) getRoom(client,roomOn, mainRoom);
   }
 }
