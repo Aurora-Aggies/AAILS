@@ -109,11 +109,15 @@ app.get('/changed-room', function(req, res){
 //returns current room object
 app.get('/current-room', function(req, res){
 	let i = req.query.r;
-	let room = JSON.stringify({	T:database.rooms[i-1].correctedTempValues, 
-								L:database.rooms[i-1].lumensValues, 
-								S:database.rooms[i-1].startValues, 
-								E:database.rooms[i-1].endValues});
-	res.send(room);
+	var cycle = [];
+	for(var x = 0; x < database.rooms[i-1].startValues.length; x++){
+		cycle.push({	T:database.rooms[i-1].correctedTempValues[x], 
+						L:database.rooms[i-1].lumensValues[x], 
+						S:database.rooms[i-1].startValues[x], 
+						E:database.rooms[i-1].endValues[x]});
+	}
+	
+	res.send(JSON.stringify({Cycles: cycle}));
 	
 	//room has no longer been changed since last ping
 	database.rooms[i-1].changeRoomChanged(false);
