@@ -1,22 +1,17 @@
 #include <EEPROM.h>
-
 #include "aails.h"
 #include "parser.h"
 #include <SPI.h>
 #include <SD.h>
 #include <Ethernet2.h>
-//#include <ArduinoJson.h>
-#include <avr/pgmspace.h>
 
-boolean conn = false;
+
 boolean roomOn = false;
 boolean sdOn = false;
 unsigned long start_time;
 byte hour;
-byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
 byte brightness;
 RoomClass mainRoom;
-IPAddress server(192, 168, 137, 1);
 
 void setup() {
   // put your setup code here, to run once:
@@ -52,14 +47,9 @@ void setup() {
   }
 
   //Start Ethernet Connection
+  byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
   Ethernet.begin(mac);
   delay(1000);
-
-  EthernetClient client;
-  if (client.connect(server, 8080)) {
-    conn = true;
-    client.stop();
-  }
 
   if (!roomOn) hour = 0;
   start_time = 0;
@@ -73,8 +63,8 @@ void loop() {
     //Every 10 seconds will represent an hour
     start_time = millis();
     hour += elapse/10000;
-    if (hour > 24)
-      hour = 1;
+    if (hour > 23)
+      hour = 0;
     if (roomOn){
       if (sdOn){
         SD.remove("time.txt");
@@ -86,19 +76,16 @@ void loop() {
       mainRoom.cycle(hour);
     }
   }
-  if (conn){
-    // Make a HTTP request:
-    //Example of different GETS client.println("GET /changed-brightness?r=1 HTTP/1.1");
-    boolean room_change = getRoomChange(server);
-    boolean bright_change = getBrightChange(server);
-    if (room_change){
-      room_change = false;
+  
+  EthernetClient client;
+  IPAddress server(192, 168, 137, 1);
+  if (client.connect(server,8080)){
+    client.stop();
+    boolean room_change = getChanges(server,0);
+    boolean bright_change = getChanges(server,1);
+    if (room_change)
       getRoom(roomOn, mainRoom, server);
-    }
-    if (bright_change && roomOn){
-      bright_change = false;
-      Serial.println("changing brightness");
+    if (bright_change && roomOn)
       changeBr(mainRoom,server);
-    }
   }
 }

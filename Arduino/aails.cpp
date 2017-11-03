@@ -7,6 +7,7 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
 	size = sz;
+	br_hold = 0;
 	for (byte i=0; i<sz;i++){
 		t[i] = tmp[i]; //sets the color temps for this instance
 		br[i] = bright[i]; //sets the brightnesses for this instance
@@ -18,14 +19,14 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 		light.setPixelColor(i, temp.color(t[0],br[0]));
 	light.show(); //Lights will light up with this
 	currentPhase = 0; //Initialize current phase
-	//delay((DAY_LENGTH * (day[currentPhase] * .01))); //Delay the appropriate amount for cycle
 }
 
 void RoomClass::cycle(byte hour){
     //Serial.println(hour);
 	byte ec = end[currentPhase];
+	//Serial.println(ec);
 	if (hour >= ec){
-		//Serial.println("Switch");
+		Serial.println("Switch");
 		while(hour >= ec){
 			currentPhase++;
 			ec = end[currentPhase];
@@ -35,12 +36,14 @@ void RoomClass::cycle(byte hour){
 		light.begin();
 		for(byte i=0;i<60;i++)
 			light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
+		light.setBrightness(br_hold);
 		light.show();
 	}
 	
 }
 
 void RoomClass::set_br(int b){
+	br_hold = b;
 	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 	light.begin();
 	for(byte i=0;i<60;i++)

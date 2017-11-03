@@ -11,12 +11,11 @@ String parseRequest(String x){
 
 void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
 	EthernetClient client;
-	if (client.connect(server, 8080)) {
-		client.println("GET / HTTP/1.1");
-		client.println("Host: www.google.com");
-		client.println("Connection: close");
-		client.println();
-	}
+	client.connect(server, 8080);
+	client.println("GET / HTTP/1.1");
+	client.println("Host: www.google.com");
+	client.println("Connection: close");
+	client.println();
 	delay(500);
 	
 	String rs = "";
@@ -49,54 +48,25 @@ void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
     }
 }
 
-boolean getBrightChange(IPAddress server){
+boolean getChanges(IPAddress server, byte b){
 	String rs;
 	EthernetClient client;
-	if (client.connect(server, 8080)){
-		//Serial.println("connected");
-		client.println("GET /change-brightness.html HTTP/1.1");
-		client.println("Host: www.google.com");
-		client.println("Connection: close");
-		client.println();
-	} else {
-		Serial.println("Not connected");
-	}
-	delay(500);
-    while (client.available() > 0){
-        char g = client.read();
-        rs += g;
-    }
-    if (!client.connected()){
-        String command = parseRequest(rs);
-		//Serial.println(command);
-		client.stop();
-        if (command.equals("True"))
-			return true;
-		else
-			return false;
-    }
-}
-
-boolean getRoomChange(IPAddress server){
-	String rs;
-	EthernetClient client;
-	if (client.connect(server, 8080)){
-		//Serial.println("connected");
+	client.connect(server, 8080);
+	if (b == 0) 
 		client.println("GET /change-room.html HTTP/1.1");
-		client.println("Host: www.google.com");
-		client.println("Connection: close");
-		client.println();
-	} else {
-		Serial.println("Not connected");
-	}
+	if (b == 1)
+		client.println("GET /change-brightness.html HTTP/1.1");
+	client.println("Host: www.google.com");
+	client.println("Connection: close");
+	client.println();
 	delay(500);
+	
     while (client.available() > 0){
         char g = client.read();
         rs += g;
     }
     if (!client.connected()){
         String command = parseRequest(rs);
-		//Serial.println(command);
 		client.stop();
         if (command.equals("True"))
 			return true;
@@ -107,12 +77,11 @@ boolean getRoomChange(IPAddress server){
 
 void changeBr(RoomClass &rc, IPAddress server){
 	EthernetClient client;
-	if (client.connect(server, 8080)) {
-		client.println("GET /get-brightness.html HTTP/1.1");
-		client.println("Host: www.google.com");
-		client.println("Connection: close");
-		client.println();
-	}
+	client.connect(server, 8080);
+	client.println("GET /get-brightness.html HTTP/1.1");
+	client.println("Host: www.google.com");
+	client.println("Connection: close");
+	client.println();
 	delay(500);
 	
 	String rs = "";

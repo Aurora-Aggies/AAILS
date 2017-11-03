@@ -13,6 +13,7 @@ class RoomClass{
 	byte end [24];
 	byte size;
 	byte currentPhase; //Stores the current phase
+	byte br_hold;
 	
 	public:
 	void initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz); //initializes the cycle
