@@ -152,21 +152,25 @@ app.post('/sensor-data', function (req, res) {
 	let g2 = rgb3[1] - g1;
 	let b2 = rgb3[2] - b1;
 	
-	console.log(rgb3);
-	console.log(colorTemp.rgb2temp([r2, g2, b2]));
+	//console.log("");
+	//console.log(rgb3);
+	//console.log([r1, g1, b1]);
+	//console.log([r2, g2, b2]);
+	
+	let rgbx;
 	
 	//for each phase in the cycle
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
 		//convert desired temperature to desired rgb
-		let rgbx = colorTemp.temp2rgb(database.rooms[i-1].tempValues[x]);
-		let rx = rgbx[0];
-		let gx = rgbx[1];
-		let bx = rgbx[2];
+		rgbx = colorTemp.temp2rgb(database.rooms[i-1].tempValues[x]);
+		rx = rgbx[0];
+		gx = rgbx[1];
+		bx = rgbx[2];
 		
 		//add difference from current rgb to give corrected rgb
-		rgbx[0] = rx + r2;
-		rgbx[1] = bx + b2;
-		rgbx[2] = gx + g2;
+		rgbx[0] += r2;
+		rgbx[1] += g2;
+		rgbx[2] += bx + b2;
 		
 		//adjust for bounds 
 		if (rgbx[0] > 255) {
@@ -186,13 +190,14 @@ app.post('/sensor-data', function (req, res) {
 		}
 		
 		//convert corrected rgb to corrected temperature and update variable
-		console.log(colorTemp.rgb2temp(rgbx));
+		//console.log(colorTemp.rgb2temp(rgbx));
 		database.rooms[i-1].changeCorrectedTempValueAtIndex(x, colorTemp.rgb2temp(rgbx));
 	}
 	
 	//room has been changed since last ping
 	database.rooms[i-1].changeRoomChanged(true);
 	
+	res.render(path + 'sensor-simulator');
 })
 
 //simulator for testing
