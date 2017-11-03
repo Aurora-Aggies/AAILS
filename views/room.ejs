@@ -50,4 +50,19 @@
 
 </body>
  <% include partials/footer %>
+ <script> 
+    $('.switch input').change(function(){
+        $input = $(this);
+
+        if($input.is(':checked')){
+            $sidebar_img_container.fadeIn('fast');
+            $sidebar.attr('data-image','#')
+            background_image = true;
+        } else {
+            $sidebar.removeAttr('data-image');
+            $sidebar_img_container.fadeOut('fast');
+            background_image = false;
+        }
+    });
+ </script>
 </html>

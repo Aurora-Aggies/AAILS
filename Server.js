@@ -12,11 +12,28 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path));
 
-/***************************** Interface Requests *****************************/
-
 // ejs
 //app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
+
+/***************************** User Interface Requests *****************************/
+app.get('/userview', function(req, res){ 
+	console.log(path + 'userview');
+
+	res.render(path + 'userview', {
+ 		name: "User View", 
+ 		room: database.rooms[0]});
+});
+
+
+
+
+
+
+
+
+
+/***************************** Admin Interface Requests *****************************/
 
 app.get('/', function(req, res){ 
  	res.render(path + 'index', {
