@@ -131,7 +131,8 @@ app.post('/sensor-data', function (req, res) {
 	let g1 = req.body.green;
 	let b1 = req.body.blue;
 	
-	//TODO: add brightness and threshold
+	//TODO: add brightness and threshold and warning
+	let warning = false;
 	
 	//find currently desired temperature in cycle
 	let date = new Date();
@@ -143,8 +144,6 @@ app.post('/sensor-data', function (req, res) {
 			break;
 		}
 	}
-	
-	console.log(t3);
 	
 	//Calculate rgb difference
 	let rgb3 = colorTemp.temp2rgb(t3);
@@ -175,18 +174,24 @@ app.post('/sensor-data', function (req, res) {
 		//adjust for bounds 
 		if (rgbx[0] > 255) {
 			rgbx[0] = 255;
+			warning = true;
 		} else if (rgbx[0] < 0) {
 			rgbx[0] = 0;
+			warning = true;
 		}
 		if (rgbx[1] > 255) {
 			rgbx[1] = 255;
+			warning = true;
 		} else if (rgbx[1] < 0) {
 			rgbx[1] = 0;
+			warning = true;
 		}
 		if (rgbx[2] > 255) {
 			rgbx[2] = 255;
+			warning = true;
 		} else if (rgbx[2] < 0) {
 			rgbx[2] = 0;
+			warning = true;
 		}
 		
 		//convert corrected rgb to corrected temperature and update variable
