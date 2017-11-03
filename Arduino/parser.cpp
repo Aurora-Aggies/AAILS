@@ -122,6 +122,8 @@ void changeBr(RoomClass &rc, IPAddress server){
     }
 	String c = parseRequest(rs);
 	Serial.println(c.toInt());
+	byte b = c.toInt();
+	EEPROM.update(1,b);
 	rc.set_br(c.toInt());
 	
 }
