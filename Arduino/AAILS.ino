@@ -3,52 +3,62 @@
 #include "aails.h"
 #include "parser.h"
 #include <SPI.h>
+#include <SD.h>
 #include <Ethernet2.h>
 //#include <ArduinoJson.h>
 #include <avr/pgmspace.h>
 
 boolean conn = false;
 boolean roomOn = false;
+boolean sdOn = false;
 unsigned long start_time;
 byte hour;
 byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
+byte brightness;
 RoomClass mainRoom;
 IPAddress server(192, 168, 137, 1);
-IPAddress ip(192, 168, 137, 1);
-EthernetClient client;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); //Initializes Serial Communications
-  while (!Serial){
+  /*while (!Serial){
     ; //Wait for Serial to connect
+  }*/
+  //Serial.println(freeRam()); //Prints available ram upon startup
+
+  pinMode(53,OUTPUT);
+  digitalWrite(10,HIGH);
+
+  if (SD.begin(4)) sdOn = true;
+  if (!SD.exists("time.txt") && sdOn) {
+    File f;
+    f = SD.open("time.txt",FILE_WRITE);
+    f.close();
   }
-  Serial.println(freeRam()); //Prints available ram upon startup
   
   if (EEPROM.read(0) == 1){
     roomOn = true;
-    int sz = 0;
-    hour = EEPROM.read(1);
-    EEPROM.get(2,sz); //Read size of JSON string
-    EEPROM.get(4,mainRoom);
+    if (sdOn){
+      File f;
+      f = SD.open("time.txt",FILE_READ);
+      while (f.available())
+        hour = f.read();
+      f.close();
+    } else {
+      hour = 0;
+    }
+    EEPROM.get(2,mainRoom);
+    brightness = EEPROM.read(1);
   }
 
   //Start Ethernet Connection
-  if (Ethernet.begin(mac) == 0) {
-    //Serial.println("Failed to configure Ethernet using DHCP");
-    // try to congifure using IP address instead of DHCP:
-    //Ethernet.begin(mac, ip);
-  }
-  // give the Ethernet shield a second to initialize:
+  Ethernet.begin(mac);
   delay(1000);
-  //Serial.println("connecting...");
-  
+
+  EthernetClient client;
   if (client.connect(server, 8080)) {
-    //Serial.println("connected");
     conn = true;
-  } else {
-    // if you didn't get a connection to the server:
-    //Serial.println("connection failed");
+    client.stop();
   }
 
   if (!roomOn) hour = 0;
@@ -66,14 +76,29 @@ void loop() {
     if (hour > 24)
       hour = 1;
     if (roomOn){
-      EEPROM.update(1,hour); //attempt to remember hour
+      if (sdOn){
+        SD.remove("time.txt");
+        File f;
+        f = SD.open("time.txt",FILE_WRITE);
+        f.write(hour);
+        f.close();
+      }
       mainRoom.cycle(hour);
     }
   }
   if (conn){
     // Make a HTTP request:
     //Example of different GETS client.println("GET /changed-brightness?r=1 HTTP/1.1");
-    boolean change = getBrightChange(client,server);
-    if (change) getRoom(client,roomOn, mainRoom);
+    boolean room_change = getRoomChange(server);
+    boolean bright_change = getBrightChange(server);
+    if (room_change){
+      room_change = false;
+      getRoom(roomOn, mainRoom, server);
+    }
+    if (bright_change && roomOn){
+      bright_change = false;
+      Serial.println("changing brightness");
+      changeBr(mainRoom,server);
+    }
   }
 }

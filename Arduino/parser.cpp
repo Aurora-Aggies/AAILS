@@ -2,18 +2,22 @@
 
 
 String parseRequest(String x){
-	int start = x.lastIndexOf("<html>") + 8;
-	int end = x.lastIndexOf("</html>") - 1;
+	int start = x.lastIndexOf("<body>") + 8;
+	int end = x.lastIndexOf("</body>") - 1;
 	x = x.substring(start,end);
 	x.trim();
 	return x;
 }
 
-void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
-	client.println("GET / HTTP/1.1");
-    client.println("Host: www.google.com");
-    client.println("Connection: close");
-    client.println();
+void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
+	EthernetClient client;
+	if (client.connect(server, 8080)) {
+		client.println("GET / HTTP/1.1");
+		client.println("Host: www.google.com");
+		client.println("Connection: close");
+		client.println();
+	}
+	delay(500);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -26,7 +30,7 @@ void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
     if (root.success()) {
 		byte sz = root["Cycles"].size(); //Stores how many cycles we need
 		int t[sz]; //Stores color temps for daily cycle
-		int b[sz]; //Stores intensity of temp for daily cycle
+		byte b[sz]; //Stores intensity of temp for daily cycle
 		byte s[sz]; //Stores start times 
 		byte e[sz]; //Stores end times 
 		for (byte i = 0; i < sz; i++){ //Sets values
@@ -41,33 +45,85 @@ void getRoom(EthernetClient client, boolean  &bs, RoomClass &rc){
 
 		bs = true; //change boolean so we know RoomClass is initialized
 		EEPROM.update(0,1); //EEPROM store bool above
-		EEPROM.put(2,sizeof(room)); //EEPROM  store JSON string size
-		EEPROM.put(4,room); //EEPROM store room class
+		EEPROM.put(2,room); //EEPROM store room class
     }
 }
 
-boolean getBrightChange(EthernetClient client, IPAddress server){
+boolean getBrightChange(IPAddress server){
 	String rs;
-	client.println("GET /change-brightness.html HTTP/1.1");
-    client.println("Host: www.google.com");
-	client.println("Connection: close");
-    client.println();
-
+	EthernetClient client;
+	if (client.connect(server, 8080)){
+		//Serial.println("connected");
+		client.println("GET /change-brightness.html HTTP/1.1");
+		client.println("Host: www.google.com");
+		client.println("Connection: close");
+		client.println();
+	} else {
+		Serial.println("Not connected");
+	}
+	delay(500);
     while (client.available() > 0){
         char g = client.read();
         rs += g;
     }
     if (!client.connected()){
         String command = parseRequest(rs);
-        if (command.equals("True")){
-			Serial.println("Yeah");
+		//Serial.println(command);
+		client.stop();
+        if (command.equals("True"))
 			return true;
-		}
-		else {
+		else
 			return false;
-		}
-		client.connect(server, 8080);
     }
+}
+
+boolean getRoomChange(IPAddress server){
+	String rs;
+	EthernetClient client;
+	if (client.connect(server, 8080)){
+		//Serial.println("connected");
+		client.println("GET /change-room.html HTTP/1.1");
+		client.println("Host: www.google.com");
+		client.println("Connection: close");
+		client.println();
+	} else {
+		Serial.println("Not connected");
+	}
+	delay(500);
+    while (client.available() > 0){
+        char g = client.read();
+        rs += g;
+    }
+    if (!client.connected()){
+        String command = parseRequest(rs);
+		//Serial.println(command);
+		client.stop();
+        if (command.equals("True"))
+			return true;
+		else
+			return false;
+    }
+}
+
+void changeBr(RoomClass &rc, IPAddress server){
+	EthernetClient client;
+	if (client.connect(server, 8080)) {
+		client.println("GET /get-brightness.html HTTP/1.1");
+		client.println("Host: www.google.com");
+		client.println("Connection: close");
+		client.println();
+	}
+	delay(500);
+	
+	String rs = "";
+    while (client.available() > 0){
+        char g = client.read();
+        rs += g;
+    }
+	String c = parseRequest(rs);
+	Serial.println(c.toInt());
+	rc.set_br(c.toInt());
+	
 }
 
 int freeRam () 

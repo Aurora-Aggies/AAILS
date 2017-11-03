@@ -2,7 +2,7 @@
 //Let's say a day is 30 seconds (30,000 ms)
 const int PROGMEM DAY_LENGTH = 30000;
 
-void RoomClass::initCycle(int tmp [], int bright [], byte st [], byte ed [], byte sz){
+void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz){
 	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
@@ -38,6 +38,15 @@ void RoomClass::cycle(byte hour){
 		light.show();
 	}
 	
+}
+
+void RoomClass::set_br(int b){
+	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+	light.begin();
+	for(byte i=0;i<60;i++)
+		light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
+	light.setBrightness(b);
+	light.show();
 }
 
 /*void RoomClass::printAll(){

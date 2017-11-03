@@ -8,7 +8,9 @@
 #ifndef PARSER_H
 #define PARSER_H
 String parseRequest(String x);
-void getRoom(EthernetClient client, boolean &b, RoomClass &rc);
-boolean getBrightChange(EthernetClient client, IPAddress server);
+void getRoom(boolean &b, RoomClass &rc, IPAddress server);
+void changeBr(RoomClass &rc, IPAddress server);
+boolean getBrightChange(IPAddress server);
+boolean getRoomChange(IPAddress server);
 int freeRam();
 #endif
