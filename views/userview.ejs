@@ -23,6 +23,7 @@
 	    /* Saved Changes */
 
 	    #note {
+	    	display: none;
 	    	color: #00529B;
 		    position: absolute;
 		    z-index: 101;
@@ -136,19 +137,23 @@
 			var currentColor = power.style.color;
 
 			// send info to backend then confirm with style change and saved changes notification
+			console.log(currentColor);
 
 			if(currentColor == "green")
 			{
 				power.style.color = "red";
+				note.style.display = 'initial';
+			}
+			else if (currentColor == "red")
+			{
+				power.style.color = "green";
+				note.style.display = 'initial';
 			}
 			else
 			{
+				// set the color to the correct value
 				power.style.color = "green";
 			}
-
-		   note.style.display = 'initial';
-
-
 		}
 	</script>
 

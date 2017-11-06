@@ -20,12 +20,45 @@ app.use(express.static(path));
 app.set('view engine', 'ejs');
 
 /***************************** User Interface Requests *****************************/
-app.get('/userview', function(req, res){ 
+app.get('/userview_lobby', function(req, res){ 
+	console.log(path + 'userview_lobby');
+
+	res.render(path + 'userview_lobby', {
+ 		name: "Rooms", 
+ 		rooms: database.rooms});
+});
+
+
+
+app.get('/userview/:id', function(req, res){ 
 	console.log(path + 'userview');
 
-	res.render(path + 'userview', {
- 		name: "User View", 
- 		room: database.rooms[0]});
+	var reqID = req.params.id;
+
+	// get rid of the ":" from the parameter of the req
+	if(reqID.charAt(0) === ':')
+	{
+		reqID = reqID.slice( 1 );
+	}
+
+	var indexOfRoom = parseInt(reqID) - 1;
+
+	// making sure we are getting something that exists 
+	if(indexOfRoom < 0 || indexOfRoom >= database.rooms.length)
+	{
+		res.render(path + 'error', {
+			name: "ERROR", 
+			errorCode: "Not a valid room!"});
+	}
+	else
+	{
+		var title = "Room " + reqID;
+		console.log("INDEX: " + indexOfRoom);
+		
+		res.render(path + '/userview', {
+	 		name: title, 
+	 		room: database.rooms[indexOfRoom]});
+	}
 });
 
 
