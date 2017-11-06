@@ -8,22 +8,30 @@
                
             </div>
 
-            <ul class="nav">
+            <!-- <ul class="nav">
                 <li class="active">
-                    <a href="/room1">
+                    <a href="/room/:1">
                         <i class="pe-7s-users"></i>
                         <p>Room 1</p>
                     </a>
-                     <a href="">
+                     <a href="/room/:2">
                         <i class="pe-7s-users"></i>
                         <p>Room 2</p>
                     </a>
-                     <a href="">
-                        <i class="pe-7s-users"></i>
-                        <p>Room 3</p>
-                    </a>
                 </li>
+            </ul>-->
+
+            <ul class="nav">
+                <% for (var i = 0; i < numOfRooms; i++) { %>
+                   <li class="active">
+                        <a href="/room/: <%= i + 1 %>">
+                            <i class="pe-7s-users"></i>
+                            <p>Room <%= i + 1 %></p>
+                        </a>
+                    </li> 
+                <% } %>
             </ul>
+
         </div>
     </div>
 

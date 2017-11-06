@@ -1,81 +1,81 @@
 #include "aails.h"
-//Let's say a day is 30 seconds (30,000 ms)
-const int PROGMEM DAY_LENGTH = 30000;
-	
-RoomClass::RoomClass(){
-	//Constructor
+
+void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz){
+	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
-}
-
-void RoomClass::showPhase(int num){
-	//Shows desired phase within the cycle
-	if (num < 7 || num > -1){
-		currentPhase = num;
-		for(byte i=0;i<NUMPIXELS;i++)
-			light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
-		light.show();
-		delay((DAY_LENGTH * (day[currentPhase] * .01)));
+	size = sz;
+	br_hold = 64;
+	for (byte i=0; i<sz;i++){
+		t[i] = tmp[i]; //sets the color temps for this instance
+		br[i] = bright[i]; //sets the brightnesses for this instance
+		start[i] = st[i]; //sets start times
+		end[i] = ed[i]; //sets end times
 	}
-}
-
-void RoomClass::set(int tc, int brt){
-	for(byte i=0;i<NUMPIXELS;i++){
-		//Typical way to set lights (every px) to a certain color and brightness
-		light.setPixelColor(i, temp.color(tc,brt));
-	}
-	light.show();
-}
-
-void RoomClass::off(){
-	//Turns lights off (color values set to 0)
-	for(byte i=0;i<NUMPIXELS;i++)
-		light.setPixelColor(i, 0,0,0);	
-	light.show();
-}
-
-void RoomClass::printAll(){
-	//Prints all values in the cycle
-	for (byte i = 0; i < 7; i++){
-		Serial.println(t[i]);
-		Serial.println(br[i]);
-		Serial.println(day[i]);
-		Serial.println(i);
-	}
-}
-
-void RoomClass::initCycle(int tmp [], int bright [], int perc []){
-	//Initializes the cycle. Should be called ASAP after constructor
-	t = tmp; //sets the color temps for this instance
-	br = bright; //sets the brightnesses for this instance
-	day = perc; //sets the percentages of this instance
-	for(byte i=0;i<NUMPIXELS;i++){
-		//Set every pixel to first color temp and brightness value
+	//Set every pixel to first color temp and brightness value
+	for(byte i=0;i<60;i++)
 		light.setPixelColor(i, temp.color(t[0],br[0]));
-	}
 	light.show(); //Lights will light up with this
 	currentPhase = 0; //Initialize current phase
-	delay((DAY_LENGTH * (day[currentPhase] * .01))); //Delay the appropriate amount for cycle
 }
 
-void RoomClass::cycle(){
-	if (currentPhase + 1 < 7){
-		currentPhase++; //increment to next phase
-		for(byte i=0;i<NUMPIXELS;i++){
-			//set to next phase
+void RoomClass::cycle(byte hour){
+	byte ec = end[currentPhase];
+	while(hour > ec){
+		currentPhase++;
+		ec = end[currentPhase];
+	}
+	if (hour == ec){
+		currentPhase++;
+		if (currentPhase >= size) currentPhase = 0;
+		Serial.println(t[currentPhase]);
+		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+		light.begin();
+		for(byte i=0;i<60;i++)
 			light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
-		}
-		light.show(); //show next phase
-		delay((DAY_LENGTH * (day[currentPhase] * .01))); //delay appropriately
-	}
-	else {
-		//End of phase case. Initialize back to start.
-		Serial.println("End of Phase");
-		currentPhase = 0; //Initializing back to start
-		for(byte i=0;i<NUMPIXELS;i++){
-			light.setPixelColor(i, temp.color(t[0],br[0]));
-		}
+		//light.setBrightness(br_hold);
 		light.show();
-		delay((DAY_LENGTH * (day[currentPhase] * .01)));
+	} else {
+		//Used to transition from one phase to the next
+		byte dur = end[currentPhase] - start[currentPhase];
+		int tdiff = t[currentPhase + 1] - t[currentPhase];
+		int bdiff = br[currentPhase + 1] - br[currentPhase];
+		if (currentPhase + 1 >= size){
+			Serial.println("hit");
+			tdiff = t[0] - t[currentPhase];
+			bdiff = br[0] - br[currentPhase];
+		}
+		byte mult = hour - start[currentPhase];
+		tincr = (tdiff/dur) * mult;
+		bincr = (bdiff/dur) * mult;
+		Serial.println(t[currentPhase] + tincr);
+		Serial.println(br[currentPhase] + bincr);
+		
+		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+		light.begin();
+		for(byte i=0;i<60;i++)
+			light.setPixelColor(i, temp.color(t[currentPhase] + tincr,br[currentPhase] + bincr));
+		//light.setBrightness(br_hold);
+		light.show();
 	}
+	
 }
+
+void RoomClass::set_br(int b){
+	br_hold = b;
+	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+	light.begin();
+	for(byte i=0;i<60;i++)
+		light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
+	light.setBrightness(b);
+	light.show();
+}
+
+/*void RoomClass::printAll(){
+	for (int i = 0; i < size; i++){
+		Serial.println(t[i]);
+		Serial.println(br[i]);
+		Serial.println(start[i]);
+		Serial.println(end[i]);
+	}
+}*/
