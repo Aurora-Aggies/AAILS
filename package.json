@@ -1,0 +1,27 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node Server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "bootstrap-slider": "^9.9.0",
+    "color-temp": "0.0.2",
+    "ejs": "^2.4.1",
+    "express": "latest"
+  },
+  "description": "Aurora Aggies' ILS",
+  "main": "Database.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aurora-Aggies/AAILS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aurora-Aggies/AAILS/issues"
+  },
+  "homepage": "https://github.com/Aurora-Aggies/AAILS#readme"
+}

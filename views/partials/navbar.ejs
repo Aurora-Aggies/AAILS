@@ -1,0 +1,52 @@
+<!-- views/partials/navbar.ejs -->
+
+<div class="wrapper">
+    <div class="sidebar" data-color="blue">
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="/" class="simple-text"><i class="pe-7s-home"></i> Home</a>
+               
+            </div>
+
+            <!-- <ul class="nav">
+                <li class="active">
+                    <a href="/room/:1">
+                        <i class="pe-7s-users"></i>
+                        <p>Room 1</p>
+                    </a>
+                     <a href="/room/:2">
+                        <i class="pe-7s-users"></i>
+                        <p>Room 2</p>
+                    </a>
+                </li>
+            </ul>-->
+
+            <ul class="nav">
+                <% for (var i = 0; i < numOfRooms; i++) { %>
+                   <li class="active">
+                        <a href="/room/: <%= i + 1 %>">
+                            <i class="pe-7s-users"></i>
+                            <p>Room <%= i + 1 %></p>
+                        </a>
+                    </li> 
+                <% } %>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default navbar-fixed">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><%= name%></a>
+            
+                </div>
+            </div>
+        </nav>

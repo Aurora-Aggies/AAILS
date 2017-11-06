@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <% include partials/userview-nav %>
+    <style>
+        body {
+            margin: 0em 2em;
+        }
+
+        #wrapper{
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+
+        ul{
+            list-style-type: none;
+            font-size: 20px;
+            display: inline;
+            float: none;
+        }
+
+        li {
+            display: inline;
+            float: none;
+        }
+
+        .box {
+            border: 1px solid black;
+        }
+
+    </style>
+</head>
+<body>
+	<div id="wrapper">
+		<ul class="Rooms_list">
+                <% for (var i = 0; i < rooms.length; i++) { %>
+                   <li class="active">
+                        <div class ="box">
+                            <a href="/userview/: <%= i + 1 %>">
+                                <i class="pe-7s-users"></i>
+                                <p>Room <%= i + 1 %></p>
+                            </a>
+                        </div> 
+                    </li> 
+                <% } %>
+            </ul>
+	</div>
+	<script>
+		
+	</script>
+
+</body>
+    <% include partials/footer %>
+</html>

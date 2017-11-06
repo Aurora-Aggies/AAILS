@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <% include partials/head %>
+</head>
+<body>
+ <% include partials/navbar %>
+     <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="header">
+                            <h4 class="title">View or modify the data</h4>
+                            <p class="category">Click on a value to modify.</p>
+                        </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-hover">
+                                <thead>
+                                    <th>ID</th>
+                                    <th>Phase</th>
+                                    <th>Temperature</th>
+                                    <th>Lumens</th>
+                                    <th>Start Time</th>
+                                    <th>Stop Time</th>
+                                </thead>
+                                <tbody>
+                                    <% for (var i = 0; i < room.tempValues.length; i++) { %>
+                                        <tr>
+                                            <td><%= room.ID %></td>
+                                            <td><%= phases[i] %></td>
+                                            <td><%= room.tempValues[i] %></td>
+                                            <td><%= room.lumensValues[i] %></td>
+                                            <td><%= room.startValues[i] %></td>
+                                            <td><%= room.endValues[i] %></td>
+                                            <td><%= room.brightness %></td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+ <% include partials/footer %>
+ <script> 
+    $('.switch input').change(function(){
+        $input = $(this);
+
+        if($input.is(':checked')){
+            $sidebar_img_container.fadeIn('fast');
+            $sidebar.attr('data-image','#')
+            background_image = true;
+        } else {
+            $sidebar.removeAttr('data-image');
+            $sidebar_img_container.fadeOut('fast');
+            background_image = false;
+        }
+    });
+ </script>
+</html>
