@@ -7,9 +7,9 @@
 		this.startValues = startValues;
 		this.endValues = endValues;
 		this.brightness = brightness;
-		this.correctedTempValues = correctedTempValues;
-		
-		this.brightnessChanged = true;
+
+		this.correctedTempValues = correctedTempValues;		
+		this.brightnessChanged = false;
 		this.roomChanged = false;
 	}
 
@@ -28,13 +28,13 @@
 	Room.prototype.changeEndValueAtIndex = function (index, newEnd){
 		this.endValues[index] = newEnd;
 	}
-
-	Room.prototype.changeCorrectedTempValueAtIndex = function (index, newTemp){
-		this.correctedTempValues[index] = newTemp;
+	
+	Room.prototype.changeBrightness = function (index, newBright){
+		this.brightness = newBright;
 	}
 	
-	Room.prototype.changeBrightness = function (newBright){
-		this.brightness = newBright;
+	Room.prototype.changeCorrectedTempValueAtIndex = function (index, newTemp){
+		this.correctedTempValues[index] = newTemp;
 	}
 	
 	Room.prototype.changeBrightnessChanged = function (newChanged){
@@ -45,7 +45,6 @@
 		this.roomChanged = newChanged;
 	}
 	
-
 module.exports = Room;
 /* ---------- */	
 

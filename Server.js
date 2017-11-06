@@ -134,15 +134,19 @@ app.post('/new-brightness', function(req, res){
 
 //returns current hour 0-23 (concatenated, not rounded)
 app.get('/current-time', function(req, res){
+	console.log(path + 'current-time');
+	
 	let date = new Date();
 	let current_hour = date.getHours();
-	res.send(current_hour.toString());
+	res.send("body:\n" + current_hour.toString() + "\n:body");
 });
 
 //indicates whether the brightness has been changed since last ping
 app.get('/changed-brightness', function(req, res){
+	console.log(path + 'changed-brightness');
+	
 	let i = req.query.r;
-	res.send(database.rooms[i-1].brightnessChanged.toString());
+	res.send("body:\n" + database.rooms[i-1].brightnessChanged.toString() + "\n:body");
 });
 
 //returns current brightness 0-255
@@ -150,11 +154,13 @@ app.get('/changed-brightness', function(req, res){
 //255 is second-brightest
 //1 is dimmest
 app.get('/current-brightness', function(req, res){
+	console.log(path + 'current-brightness');
+	
 	let i = req.query.r;
 	let b = database.rooms[i-1].brightness;
 	
 	//modulo to keep in bounds and to make 256 go to 0
-	res.send((b % 256).toString());
+	res.send("body:\n" + (b % 256).toString() + "\n:body");
 	
 	//brightness has no longer been changed since last ping
 	database.rooms[i-1].changeBrightnessChanged(false);
@@ -162,12 +168,16 @@ app.get('/current-brightness', function(req, res){
 
 //indicates whether the room has been changed since last ping
 app.get('/changed-room', function(req, res){
+	console.log(path + 'changed-room');
+	
 	let i = req.query.r;
-	res.send(database.rooms[i-1].roomChanged.toString());
+	res.send("body:\n" + database.rooms[i-1].roomChanged.toString() + "\n:body");
 });
 
 //returns current room object
 app.get('/current-room', function(req, res){
+	console.log(path + 'current-room');
+	
 	let i = req.query.r;
 	var cycle = [];
 	for(var x = 0; x < database.rooms[i-1].startValues.length; x++){
@@ -177,19 +187,43 @@ app.get('/current-room', function(req, res){
 						E:database.rooms[i-1].endValues[x]});
 	}
 	
-	res.send(JSON.stringify({Cycles: cycle}));
+	res.send("body:\n" + JSON.stringify({Cycles: cycle}) + "\n:body");
 	
 	//room has no longer been changed since last ping
 	database.rooms[i-1].changeRoomChanged(false);
 });
 
+
+//simulator for testing
+app.get('/brightness-simulator', function(req, res){ 
+	console.log(path + 'brightness-simulator');
+	
+ 	res.render(path + 'brightness-simulator');
+});
+
+
+//receives brightness value from webpage
+app.post('/new-brightness-simulator', function(req, res){
+	let i = req.body.room;
+	let b = req.body.brightness;
+	database.rooms[i-1].changeBrightness(b);
+	
+	//brightness has been changed since last ping
+	database.rooms[i-1].changeBrightnessChanged(true);
+	
+	res.send("Success");
+});
+
 /***************************** Sensor Requests *****************************/
 
 app.post('/sensor-data', function (req, res) {
+	console.log(path + 'sensor-data');
+	
 	let i = req.body.r;
 	let r1 = req.body.red;
 	let g1 = req.body.green;
 	let b1 = req.body.blue;
+	let t1 = colorTemp.rgb2temp([r1, r2, r3]);
 	
 	//TODO: add brightness and threshold and warning
 	let warning = false;
@@ -204,6 +238,11 @@ app.post('/sensor-data', function (req, res) {
 			break;
 		}
 	}
+	
+	//check threshold for compensation
+	if (abs(t3 - t1) < 50) {
+		
+	}	
 	
 	//Calculate rgb difference
 	let rgb3 = colorTemp.temp2rgb(t3);
@@ -267,22 +306,13 @@ app.post('/sensor-data', function (req, res) {
 
 //simulator for testing
 app.get('/sensor-simulator', function(req, res){ 
+	console.log(path + 'sensor-simulator');
+	
  	res.render(path + 'sensor-simulator');
 });
 
-/*
-router.get("/",function(req,res){
-  res.sendFile(path + "dashboard.html");
-});
+/***************************** Server Setup *****************************/
 
-router.get("/room1",function(req,res){
- res.sendFile(path + "room1.html");
-
-});
-
-app.use("/",router);
-*/
-
-app.listen(3000,function(){
+app.listen(3000, function(){
   console.log("Live at Port 3000");
 });

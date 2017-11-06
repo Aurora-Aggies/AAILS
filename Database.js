@@ -21,7 +21,7 @@ var phases = ["Sunset", "Dawn", "Overcast", "Daylight", "Mid-Afternoon", "Dusk",
 	var Temperatures2 = [2700, 2700, 2700, 2700, 2700, 2700, 2700];
 	var Lumens2 = [1700, 1700, 1700, 1700, 1700, 1700, 1700];
 	var Start2 = [0, 3, 6, 9, 12, 15, 18];
-	var End2 = [3, 6, 9, 12, 15, 18, 0];
+	var End2 = [3, 6, 9, 12, 15, 18, 24];
 	var Brightness2 = 140;
 
 	let room2 = new Room(2, Temperatures2, Lumens2, Start2, End2, Brightness2, Temperatures2);
