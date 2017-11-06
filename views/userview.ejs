@@ -8,7 +8,6 @@
 	    }
 
 	    #wrapper{
-	    	margin: 2em 7em;
 	    }
 
 	    #power{
@@ -16,15 +15,128 @@
 	      color: green;
 	    }
 
+	    /* Saved Changes */
+
+	    #note {
+		    position: absolute;
+		    z-index: 101;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    background: #fde073;
+		    text-align: center;
+		    line-height: 2.5;
+		    overflow: hidden; 
+		    -webkit-box-shadow: 0 0 5px black;
+		    -moz-box-shadow:    0 0 5px black;
+		    box-shadow:         0 0 5px black;
+		}
+
+		@-webkit-keyframes slideDown {
+		    0%, 100% { -webkit-transform: translateY(-50px); }
+		    10%, 90% { -webkit-transform: translateY(0px); }
+		}
+		@-moz-keyframes slideDown {
+		    0%, 100% { -moz-transform: translateY(-50px); }
+		    10%, 90% { -moz-transform: translateY(0px); }
+		}
+
+		/* Yellow Error */
+		#yellow_error {
+			margin: 2em;
+			width: 80%;
+			border: 1px solid #9F6000;
+		}
+
+		.yellow_error_title {
+			padding-left: 0.5em;
+			padding-top: 0.2em;
+			padding-bottom: 0.2em;
+			margin-bottom: 0.2em;
+			background: #FEEFB3;
+			color: #9F6000;
+			font-size: 20px;
+			border-bottom: 1px solid #9F6000;
+		}
+
+		#yellow_error p {
+			padding-left: 0.5em;
+			padding-right: 0.5em;
+		}
+
+
+
     </style>
 </head>
 <body>
 	<div id="wrapper">
-		<p id="power"><i class="pe-7s-power"></i></p> 
-	</div>
-	- slider for brightness
-	- notifications
 
+		<!-- Saved -->
+		<div id="note">
+		    Changes saved. <a id="close">[close]</a>
+		</div>
+
+		<!-- Giant power button -->
+		<p id="power"><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
+
+
+		<!-- Slider -->
+		<div id="slidecontainer">
+		  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+		  <p>Value: <span id="demo"></span></p>
+		</div>
+
+		<!-- Alerts -->
+		<div id="yellow_error">
+			<div class="yellow_error_title">
+				<i class="pe-7s-attention" ></i>
+				<span> Uh oh!</span>
+			</div>
+			<p id="yellow_error_msg">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc suscipit gravida tellus. Etiam venenatis aliquam sem. Nam dolor lorem, placerat sed, condimentum in, volutpat in, nibh. Maecenas consequat augue in urna. Proin porttitor. Aenean ac erat. </p>
+		</div>
+
+
+	</div>
+	<script>
+		// Saved changes 
+		 close = document.getElementById("close");
+		 close.addEventListener('click', function() {
+		   note = document.getElementById("note");
+		   note.style.display = 'none';
+		 }, false);
+
+		// Slider
+		var slider = document.getElementById("myRange");
+		var output = document.getElementById("demo");
+		output.innerHTML = slider.value;
+
+		slider.oninput = function() {
+		  output.innerHTML = this.value;
+		  // send info to backend
+		  note.style.display = 'initial';
+		}
+
+
+		// Power button
+		function onclick_power() {
+			var currentColor = power.style.color;
+
+			// send info to backend then confirm with style change and saved changes notification
+
+			if(currentColor == "green")
+			{
+				power.style.color = "red";
+			}
+			else
+			{
+				power.style.color = "green";
+			}
+
+		   note.style.display = 'initial';
+
+
+		}
+	</script>
 
 </body>
     <% include partials/footer %>
