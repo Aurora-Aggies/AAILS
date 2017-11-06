@@ -14,6 +14,8 @@ class RoomClass{
 	byte size;
 	byte currentPhase; //Stores the current phase
 	byte br_hold;
+	int tincr; //temp incrementor
+	int bincr; //brightness incrementor
 	
 	public:
 	void initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz); //initializes the cycle

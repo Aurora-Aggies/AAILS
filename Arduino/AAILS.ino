@@ -8,6 +8,7 @@
 
 boolean roomOn = false;
 boolean sdOn = false;
+boolean timeupdate = true;
 unsigned long start_time;
 byte hour;
 byte brightness;
@@ -80,12 +81,20 @@ void loop() {
   EthernetClient client;
   IPAddress server(192, 168, 137, 1);
   if (client.connect(server,8080)){
+    Serial.println("Connected");
     client.stop();
     boolean room_change = getChanges(server,0);
     boolean bright_change = getChanges(server,1);
+    if (timeupdate){
+      Serial.println("Updating time...");
+      hour = updateTime(server);
+      timeupdate = false;
+    }
     if (room_change)
       getRoom(roomOn, mainRoom, server);
     if (bright_change && roomOn)
       changeBr(mainRoom,server);
+  } else {
+    timeupdate = true;
   }
 }

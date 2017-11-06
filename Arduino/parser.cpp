@@ -1,5 +1,6 @@
 #include "parser.h"
 
+const int port = 8080;
 
 String parseRequest(String x){
 	int start = x.lastIndexOf("<body>") + 8;
@@ -11,7 +12,7 @@ String parseRequest(String x){
 
 void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
 	EthernetClient client;
-	client.connect(server, 8080);
+	client.connect(server, port);
 	client.println("GET / HTTP/1.1");
 	client.println("Host: www.google.com");
 	client.println("Connection: close");
@@ -51,7 +52,7 @@ void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
 boolean getChanges(IPAddress server, byte b){
 	String rs;
 	EthernetClient client;
-	client.connect(server, 8080);
+	client.connect(server, port);
 	if (b == 0) 
 		client.println("GET /change-room.html HTTP/1.1");
 	if (b == 1)
@@ -77,7 +78,7 @@ boolean getChanges(IPAddress server, byte b){
 
 void changeBr(RoomClass &rc, IPAddress server){
 	EthernetClient client;
-	client.connect(server, 8080);
+	client.connect(server, port);
 	client.println("GET /get-brightness.html HTTP/1.1");
 	client.println("Host: www.google.com");
 	client.println("Connection: close");
@@ -95,6 +96,26 @@ void changeBr(RoomClass &rc, IPAddress server){
 	EEPROM.update(1,b);
 	rc.set_br(c.toInt());
 	
+}
+
+byte updateTime(IPAddress server){
+	EthernetClient client;
+	client.connect(server, port);
+	client.println("GET /get-time.html HTTP/1.1");
+	client.println("Host: www.google.com");
+	client.println("Connection: close");
+	client.println();
+	delay(500);
+	
+	String rs = "";
+    while (client.available() > 0){
+        char g = client.read();
+        rs += g;
+    }
+	String c = parseRequest(rs);
+	Serial.println(c.toInt());
+	byte b = c.toInt();
+	return b;
 }
 
 int freeRam () 
