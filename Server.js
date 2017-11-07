@@ -135,7 +135,7 @@ app.get('/current-time', function(req, res){
 	
 	let date = new Date();
 	let current_hour = date.getHours();
-	res.send("body:\n" + current_hour.toString() + "\n:body");
+	res.send(":body:\n" + current_hour.toString() + "\n:/body:");
 });
 
 //indicates whether the brightness has been changed since last ping
@@ -143,7 +143,7 @@ app.get('/changed-brightness', function(req, res){
 	console.log(path + 'changed-brightness');
 	
 	let i = req.query.r;
-	res.send("body:\n" + database.rooms[i-1].brightnessChanged.toString() + "\n:body");
+	res.send(":body:\n" + database.rooms[i-1].brightnessChanged.toString() + "\n:/body:");
 });
 
 //returns current brightness 0-255
@@ -157,7 +157,7 @@ app.get('/current-brightness', function(req, res){
 	let b = database.rooms[i-1].brightness;
 	
 	//modulo to keep in bounds and to make 256 go to 0
-	res.send("body:\n" + (b % 256).toString() + "\n:body");
+	res.send(":body:\n" + (b % 256).toString() + "\n:/body:");
 	
 	//brightness has no longer been changed since last ping
 	database.rooms[i-1].changeBrightnessChanged(false);
@@ -168,7 +168,7 @@ app.get('/changed-room', function(req, res){
 	console.log(path + 'changed-room');
 	
 	let i = req.query.r;
-	res.send("body:\n" + database.rooms[i-1].roomChanged.toString() + "\n:body");
+	res.send(":body:\n" + database.rooms[i-1].roomChanged.toString() + "\n:/body:");
 });
 
 //returns current room object
@@ -184,7 +184,7 @@ app.get('/current-room', function(req, res){
 						E:database.rooms[i-1].endValues[x]});
 	}
 	
-	res.send("body:\n" + JSON.stringify({Cycles: cycle}) + "\n:body");
+	res.send(":body:\n" + JSON.stringify({Cycles: cycle}) + "\n:/body:");
 	
 	//room has no longer been changed since last ping
 	database.rooms[i-1].changeRoomChanged(false);
