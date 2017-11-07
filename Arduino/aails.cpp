@@ -22,6 +22,8 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 void RoomClass::cycle(byte hour, unsigned long elapse){
 	byte ec = end[currentPhase];
 	float eratio = (float)elapse/5000;
+	Serial.print("Hour: ");
+	Serial.println(hour);
 	while(hour > ec){
 		currentPhase++;
 		ec = end[currentPhase];
@@ -72,7 +74,7 @@ void RoomClass::set_br(byte b){
 void RoomClass::updateTime(byte hour){
 	currentPhase = 0;
 	byte ec = end[currentPhase];
-	while(hour > ec){
+	while(hour >= ec){
 		currentPhase++;
 		ec = end[currentPhase];
 	}	

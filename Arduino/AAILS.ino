@@ -36,24 +36,25 @@ void setup() {
   //If room is held begin intialization
   if (EEPROM.read(0) == 1){
     roomOn = true;
+    EEPROM.get(2,mainRoom); //Gets RoomClass
+    byte brightness = EEPROM.read(1); //Get Brightness
+    mainRoom.set_br(brightness);
     if (sdOn){
       File f;
       f = SD.open("time.txt",FILE_READ);
       while (f.available())
         hour = f.read();
       f.close();
+      mainRoom.updateTime(hour);
     } else {
       hour = 0;
     }
-    EEPROM.get(2,mainRoom); //Gets RoomClass
-    byte brightness = EEPROM.read(1); //Get Brightness
-    mainRoom.set_br(brightness);
   }
 
   //Start Ethernet Connection
   byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
   Ethernet.begin(mac);
-  delay(1000);
+  delay(500);
 
   if (!roomOn) hour = 0; //if room isn't on hour is 0
   start_time = 0;
