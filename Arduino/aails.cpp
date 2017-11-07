@@ -5,7 +5,7 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
 	size = sz;
-	br_hold = 64;
+	br_hold = 0; //default brightness
 	for (byte i=0; i<sz;i++){
 		t[i] = tmp[i]; //sets the color temps for this instance
 		br[i] = bright[i]; //sets the brightnesses for this instance
@@ -19,8 +19,9 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 	currentPhase = 0; //Initialize current phase
 }
 
-void RoomClass::cycle(byte hour){
+void RoomClass::cycle(byte hour, unsigned long elapse){
 	byte ec = end[currentPhase];
+	float eratio = (float)elapse/5000;
 	while(hour > ec){
 		currentPhase++;
 		ec = end[currentPhase];
@@ -33,18 +34,18 @@ void RoomClass::cycle(byte hour){
 		light.begin();
 		for(byte i=0;i<60;i++)
 			light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
-		//light.setBrightness(br_hold);
+		light.setBrightness(br_hold); //Keep eye
 		light.show();
 	} else {
 		//Used to transition from one phase to the next
-		byte dur = end[currentPhase] - start[currentPhase];
+		int dur = end[currentPhase] - start[currentPhase];
 		int tdiff = t[currentPhase + 1] - t[currentPhase];
 		int bdiff = br[currentPhase + 1] - br[currentPhase];
 		if (currentPhase + 1 >= size){
 			tdiff = t[0] - t[currentPhase];
 			bdiff = br[0] - br[currentPhase];
 		}
-		byte mult = hour - start[currentPhase];
+		float mult = ((float)hour + eratio) - start[currentPhase];
 		tincr = (tdiff/dur) * mult;
 		bincr = (bdiff/dur) * mult;
 		
@@ -52,13 +53,13 @@ void RoomClass::cycle(byte hour){
 		light.begin();
 		for(byte i=0;i<60;i++)
 			light.setPixelColor(i, temp.color(t[currentPhase] + tincr,br[currentPhase] + bincr));
-		//light.setBrightness(br_hold);
+		light.setBrightness(br_hold); //Keep eye
 		light.show();
 	}
 	
 }
 
-void RoomClass::set_br(int b){
+void RoomClass::set_br(byte b){
 	br_hold = b;
 	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 	light.begin();
@@ -66,6 +67,15 @@ void RoomClass::set_br(int b){
 		light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
 	light.setBrightness(b);
 	light.show();
+}
+
+void RoomClass::updateTime(byte hour){
+	currentPhase = 0;
+	byte ec = end[currentPhase];
+	while(hour > ec){
+		currentPhase++;
+		ec = end[currentPhase];
+	}	
 }
 
 /*void RoomClass::printAll(){

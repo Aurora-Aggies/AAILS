@@ -11,13 +11,12 @@ String parseRequest(String x){
 }
 
 void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
-	Serial.println("Changing the room homie");
 	EthernetClient client;
 	client.connect(server, port);
 	client.println("GET /current-room?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(1000);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -60,7 +59,7 @@ boolean getChanges(IPAddress server, byte b){
 		client.println("GET /changed-brightness?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(1000);
+	delay(250);
 	
     while (client.available() > 0){
         char g = client.read();
@@ -68,7 +67,6 @@ boolean getChanges(IPAddress server, byte b){
     }
     if (!client.connected()){
         String command = parseRequest(rs);
-		//Serial.println(command);
 		client.stop();
         if (command.equals("true"))
 			return true;
@@ -78,13 +76,12 @@ boolean getChanges(IPAddress server, byte b){
 }
 
 void changeBr(RoomClass &rc, IPAddress server){
-	Serial.println("Changing the brightness homie");
 	EthernetClient client;
 	client.connect(server, port);
 	client.println("GET /current-brightness?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(1000);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -92,7 +89,6 @@ void changeBr(RoomClass &rc, IPAddress server){
         rs += g;
     }
 	String c = parseRequest(rs);
-	Serial.println(c.toInt());
 	byte b = c.toInt();
 	EEPROM.update(1,b);
 	rc.set_br(c.toInt());
@@ -105,7 +101,7 @@ byte updateTime(IPAddress server){
 	client.println("GET /current-time HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(1000);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -113,6 +109,7 @@ byte updateTime(IPAddress server){
         rs += g;
     }
 	String c = parseRequest(rs);
+	Serial.print("Hour: ");
 	Serial.println(c.toInt());
 	byte b = c.toInt();
 	return b;
