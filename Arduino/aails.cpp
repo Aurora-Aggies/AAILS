@@ -41,15 +41,12 @@ void RoomClass::cycle(byte hour){
 		int tdiff = t[currentPhase + 1] - t[currentPhase];
 		int bdiff = br[currentPhase + 1] - br[currentPhase];
 		if (currentPhase + 1 >= size){
-			Serial.println("hit");
 			tdiff = t[0] - t[currentPhase];
 			bdiff = br[0] - br[currentPhase];
 		}
 		byte mult = hour - start[currentPhase];
 		tincr = (tdiff/dur) * mult;
 		bincr = (bdiff/dur) * mult;
-		Serial.println(t[currentPhase] + tincr);
-		Serial.println(br[currentPhase] + bincr);
 		
 		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
 		light.begin();

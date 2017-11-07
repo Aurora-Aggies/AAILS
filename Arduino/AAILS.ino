@@ -79,9 +79,9 @@ void loop() {
   }
   
   EthernetClient client;
-  IPAddress server(192, 168, 137, 1);
-  if (client.connect(server,8080)){
-    Serial.println("Connected");
+  IPAddress server(192, 168, 1, 3);
+  if (client.connect(server,3000)){
+    //Serial.println("Connected");
     client.stop();
     boolean room_change = getChanges(server,0);
     boolean bright_change = getChanges(server,1);
