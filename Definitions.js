@@ -12,6 +12,9 @@
 		this.correctedTempValues = correctedTempValues;		
 		this.brightnessChanged = false;
 		this.roomChanged = false;
+		
+		this.lightsCompensating = false;
+		this.lightsDegraded = false;
 	}
 
 	Room.prototype.changeTempValueAtIndex = function (index, newTemp){
@@ -48,6 +51,14 @@
 	
 	Room.prototype.changeRoomChanged = function (newChanged){
 		this.roomChanged = newChanged;
+	}
+	
+	Room.prototype.changeLightsCompensating = function (newCompensating){
+		this.lightsCompensating = newCompensating;
+	}
+	
+	Room.prototype.changeLightsDegraded = function (newDegraded){
+		this.lightsDegraded = newDegraded;
 	}
 	
 module.exports = Room;

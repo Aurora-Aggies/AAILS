@@ -12,7 +12,7 @@ var phases = ["Night", "Dawn", "Sunrise", "Overcast", "Daylight", "Mid-Afternoon
 	var Lumens1 = [41, 135, 184, 204, 237, 171, 124, 41];
 	var Start1 = [0, 6, 8, 9, 12, 15, 18, 20];
 	var End1 = [6, 8, 9, 12, 15, 18, 20, 24];
-	var Brightness1 = 0;
+	var Brightness1 = 1.0;
 
 	let room1 = new Room(1, Temperatures1, Lumens1, Start1, End1, Brightness1, Temperatures1);
 	rooms.push(room1);
@@ -22,7 +22,7 @@ var phases = ["Night", "Dawn", "Sunrise", "Overcast", "Daylight", "Mid-Afternoon
 	var Lumens2 = [80, 125, 200, 235, 210, 130, 40, 40];
 	var Start2 = [0, 3, 6, 9, 12, 15, 18, 20];
 	var End2 = [3, 6, 9, 12, 15, 18, 20, 24];
-	var Brightness2 = 140;
+	var Brightness2 = 0.5;
 
 	let room2 = new Room(2, Temperatures2, Lumens2, Start2, End2, Brightness2, Temperatures2);
 	rooms.push(room2);

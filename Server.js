@@ -252,8 +252,8 @@ app.post('/sensor-data', function (req, res) {
 	}
 	
 	//flags for room status
-	let error = false;
-	let warning = false;
+	let warning = database.rooms[i-1].lightsCompensating;
+	let error = database.rooms[i-1].lightsDegraded;
 	
 	//find currently desired temperature in cycle
 	let date = new Date();
@@ -332,6 +332,10 @@ app.post('/sensor-data', function (req, res) {
 		database.rooms[i-1].changeCorrectedTempValueAtIndex(x, colorTemp.rgb2temp(rgbx));
 	}
 	
+	//update flags
+	database.rooms[i-1].changeLightsCompensating(warning);
+	database.rooms[i-1].changeLightsDegraded(error);
+	
 	//room has been changed since last ping
 	database.rooms[i-1].changeRoomChanged(true);
 	
@@ -395,6 +399,12 @@ app.post('/master-test-light', function(req, res){
 app.post('/master-test-brightness', function(req, res){
 	let i = req.body.r;
 	let b = req.body.brightness;
+	
+	if (b > 1) {
+		b = 1;
+	} else if (b < 0) {
+		b = 0;
+	}
 
 	database.rooms[i-1].changeBrightness(i-1, b);
 	
