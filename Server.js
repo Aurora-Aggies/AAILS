@@ -154,11 +154,11 @@ app.post('/onoffpower', function(req, res){
 	//console.log(database.rooms[i-1].lightOn);
 	if(b == "0")
 	{
-		database.rooms[i-1].changelightOn(i, false);
+		database.rooms[i-1].changeLightOn(false);
 	}
 	else
 	{
-		database.rooms[i-1].changelightOn(i, true);
+		database.rooms[i-1].changeLightOn(true);
 	}
 	//console.log(database.rooms[i-1].lightOn);
 
