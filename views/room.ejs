@@ -17,17 +17,16 @@
                         <div class="content table-responsive table-full-width">
                             <table class="table table-hover">
                                 <thead>
-                                    <th>ID</th>
                                     <th>Phase</th>
                                     <th>Temperature</th>
                                     <th>Lumens</th>
                                     <th>Start Time</th>
                                     <th>Stop Time</th>
+                                    <th>Brightness</th> 
                                 </thead>
                                 <tbody>
                                     <% for (var i = 0; i < room.tempValues.length; i++) { %>
                                         <tr>
-                                            <td><%= room.ID %></td>
                                             <td><%= phases[i] %></td>
                                             <td><%= room.tempValues[i] %></td>
                                             <td><%= room.lumensValues[i] %></td>
