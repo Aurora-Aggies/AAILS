@@ -6,6 +6,7 @@
 		this.lumensValues = lumensValues;
 		this.startValues = startValues;
 		this.endValues = endValues;
+		this.lightOn = true;
 		this.brightness = brightness;
 
 		this.correctedTempValues = correctedTempValues;		
@@ -27,6 +28,10 @@
 	
 	Room.prototype.changeEndValueAtIndex = function (index, newEnd){
 		this.endValues[index] = newEnd;
+	}
+	
+	Room.prototype.changelightOn = function (index, newLightOn){
+		this.lightOn = newLightOn;
 	}
 	
 	Room.prototype.changeBrightness = function (index, newBright){

@@ -166,17 +166,18 @@ app.get('/changed-brightness', function(req, res){
 });
 
 //returns current brightness 0-255
-//0 is brightest
-//255 is second-brightest
-//1 is dimmest
 app.get('/current-brightness', function(req, res){
 	console.log(path + 'current-brightness');
 	
 	let i = req.query.r;
+	let on = database.rooms[i-1].lightOn;
 	let b = database.rooms[i-1].brightness;
 	
-	//modulo to keep in bounds and to make 256 go to 0
-	res.send(":body:\n" + (b % 256).toString() + "\n:/body:");
+	if (on) {
+		res.send(":body:\n" + b.toString() + "\n:/body:");
+	} else {
+		res.send(":body:\n" + 0 + "\n:/body:");
+	}
 	
 	//brightness has no longer been changed since last ping
 	database.rooms[i-1].changeBrightnessChanged(false);
@@ -209,27 +210,6 @@ app.get('/current-room', function(req, res){
 	database.rooms[i-1].changeRoomChanged(false);
 });
 
-
-//simulator for testing
-app.get('/brightness-simulator', function(req, res){ 
-	console.log(path + 'brightness-simulator');
-	
- 	res.render(path + 'brightness-simulator');
-});
-
-
-//receives brightness value from webpage
-app.post('/new-brightness-simulator', function(req, res){
-	let i = req.body.room;
-	let b = req.body.brightness;
-	database.rooms[i-1].changeBrightness(b);
-	
-	//brightness has been changed since last ping
-	database.rooms[i-1].changeBrightnessChanged(true);
-	
-	res.send("Success");
-});
-
 /***************************** Sensor Requests *****************************/
 
 app.post('/sensor-data', function (req, res) {
@@ -254,9 +234,11 @@ app.post('/sensor-data', function (req, res) {
 	let date = new Date();
 	let current_hour = date.getHours();
 	let t3;
+	let current_index;
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
 		if (current_hour >= database.rooms[i-1].startValues[x] && current_hour <= database.rooms[i-1].endValues[x]) {
 			t3 = database.rooms[i-1].tempValues[x];
+			current_index = x;
 			break;
 		}
 	}
@@ -334,7 +316,7 @@ app.post('/sensor-data', function (req, res) {
 			green: g2,
 			blue: b2,
 			temp: t3,
-			newtemp: colorTemp.rgb2temp([r2 + rgb3[0],g2 + rgb3[1],b2 + rgb3[2]])	
+			newtemp: database.rooms[i-1].correctedTempValues[current_index]	
 			});
 })
 
