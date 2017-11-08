@@ -1,10 +1,10 @@
 #include "parser.h"
 
-const int port = 8080;
+const int port = 3000;
 
 String parseRequest(String x){
-	int start = x.lastIndexOf("<body>") + 8;
-	int end = x.lastIndexOf("</body>") - 1;
+	int start = x.lastIndexOf(":body:") + 7;
+	int end = x.lastIndexOf(":/body:") - 1;
 	x = x.substring(start,end);
 	x.trim();
 	return x;
@@ -13,11 +13,10 @@ String parseRequest(String x){
 void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
 	EthernetClient client;
 	client.connect(server, port);
-	client.println("GET / HTTP/1.1");
-	client.println("Host: www.google.com");
+	client.println("GET /current-room?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(500);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -25,6 +24,7 @@ void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
         rs += g;
     }
     String c = parseRequest(rs);
+	Serial.println(c);
     StaticJsonBuffer<1000> jsonBuffer; //Buffer to hold Json objects
     JsonObject& root = jsonBuffer.parseObject(c); //Parses JsonObject
     if (root.success()) {
@@ -54,13 +54,12 @@ boolean getChanges(IPAddress server, byte b){
 	EthernetClient client;
 	client.connect(server, port);
 	if (b == 0) 
-		client.println("GET /change-room.html HTTP/1.1");
+		client.println("GET /changed-room?r=1 HTTP/1.1");
 	if (b == 1)
-		client.println("GET /change-brightness.html HTTP/1.1");
-	client.println("Host: www.google.com");
+		client.println("GET /changed-brightness?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(500);
+	delay(250);
 	
     while (client.available() > 0){
         char g = client.read();
@@ -69,7 +68,7 @@ boolean getChanges(IPAddress server, byte b){
     if (!client.connected()){
         String command = parseRequest(rs);
 		client.stop();
-        if (command.equals("True"))
+        if (command.equals("true"))
 			return true;
 		else
 			return false;
@@ -79,11 +78,10 @@ boolean getChanges(IPAddress server, byte b){
 void changeBr(RoomClass &rc, IPAddress server){
 	EthernetClient client;
 	client.connect(server, port);
-	client.println("GET /get-brightness.html HTTP/1.1");
-	client.println("Host: www.google.com");
+	client.println("GET /current-brightness?r=1 HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(500);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -91,7 +89,6 @@ void changeBr(RoomClass &rc, IPAddress server){
         rs += g;
     }
 	String c = parseRequest(rs);
-	Serial.println(c.toInt());
 	byte b = c.toInt();
 	EEPROM.update(1,b);
 	rc.set_br(c.toInt());
@@ -101,11 +98,10 @@ void changeBr(RoomClass &rc, IPAddress server){
 byte updateTime(IPAddress server){
 	EthernetClient client;
 	client.connect(server, port);
-	client.println("GET /get-time.html HTTP/1.1");
-	client.println("Host: www.google.com");
+	client.println("GET /current-time HTTP/1.1");
 	client.println("Connection: close");
 	client.println();
-	delay(500);
+	delay(250);
 	
 	String rs = "";
     while (client.available() > 0){
@@ -113,6 +109,7 @@ byte updateTime(IPAddress server){
         rs += g;
     }
 	String c = parseRequest(rs);
+	Serial.print("Hour: ");
 	Serial.println(c.toInt());
 	byte b = c.toInt();
 	return b;
