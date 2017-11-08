@@ -239,9 +239,16 @@ app.post('/sensor-data', function (req, res) {
 	let r1 = req.body.red;
 	let g1 = req.body.green;
 	let b1 = req.body.blue;
-	let t1 = colorTemp.rgb2temp([r1, r2, r3]);
+	let t1 = req.body.temp;
+	let l1 = req.body.lux;
 	
-	//TODO: add brightness and threshold and warning
+	//if temperature was not provided, calculate manually
+	if (!t1) {
+		t1 = colorTemp.rgb2temp([r1, g1, b1]);
+	}
+	
+	//flags for room status
+	let error = false;
 	let warning = false;
 	
 	//find currently desired temperature in cycle
@@ -249,27 +256,36 @@ app.post('/sensor-data', function (req, res) {
 	let current_hour = date.getHours();
 	let t3;
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
-		if (current_hour >= database.rooms[i-1].startValues[x]) {
+		console.log(database.rooms[i-1].tempValues[x]);
+		if (current_hour <= database.rooms[i-1].startValues[x]) {
 			t3 = database.rooms[i-1].tempValues[x];
 			break;
 		}
 	}
 	
 	//check threshold for compensation
-	if (abs(t3 - t1) < 50) {
-		
-	}	
+	//if below threshold, do nothing
+	if (Math.abs(t3 - t1) < 50) {
+		//return;
+		res.render(path + '/sensor-simulator', {
+	 		room: null, 
+	 		red: null,
+			green: null,
+			blue: null,
+			temp: null,
+			newtemp: null,
+			lux: null			
+			});
+	}
+	
+	//flag warning because the lights are being compensated
+	warning = true;
 	
 	//Calculate rgb difference
 	let rgb3 = colorTemp.temp2rgb(t3);
 	let r2 = rgb3[0] - r1;
 	let g2 = rgb3[1] - g1;
 	let b2 = rgb3[2] - b1;
-	
-	//console.log("");
-	//console.log(rgb3);
-	//console.log([r1, g1, b1]);
-	//console.log([r2, g2, b2]);
 	
 	let rgbx;
 	
@@ -284,47 +300,63 @@ app.post('/sensor-data', function (req, res) {
 		//add difference from current rgb to give corrected rgb
 		rgbx[0] += r2;
 		rgbx[1] += g2;
-		rgbx[2] += bx + b2;
+		rgbx[2] += b2;
 		
-		//adjust for bounds 
+		//adjust for bounds
+		//flag error because lights are beyond available compensation
 		if (rgbx[0] > 255) {
 			rgbx[0] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[0] < 0) {
 			rgbx[0] = 0;
-			warning = true;
+			error = true;
 		}
 		if (rgbx[1] > 255) {
 			rgbx[1] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[1] < 0) {
 			rgbx[1] = 0;
-			warning = true;
+			error = true;
 		}
 		if (rgbx[2] > 255) {
 			rgbx[2] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[2] < 0) {
 			rgbx[2] = 0;
-			warning = true;
+			error = true;
 		}
 		
 		//convert corrected rgb to corrected temperature and update variable
-		//console.log(colorTemp.rgb2temp(rgbx));
 		database.rooms[i-1].changeCorrectedTempValueAtIndex(x, colorTemp.rgb2temp(rgbx));
 	}
 	
 	//room has been changed since last ping
 	database.rooms[i-1].changeRoomChanged(true);
 	
-	res.render(path + 'sensor-simulator');
+	res.render(path + '/sensor-simulator', {
+	 		room: i, 
+	 		red: r2,
+			green: g2,
+			blue: b2,
+			temp: database.rooms[i-1].tempValues[2],
+			newtemp: colorTemp.rgb2temp([r2 + rgb3[0],g2 + rgb3[1],b2 + rgb3[2]]),
+			lux: l1			
+			});
 })
 
 //simulator for testing
 app.get('/sensor-simulator', function(req, res){ 
 	console.log(path + 'sensor-simulator');
 	
- 	res.render(path + 'sensor-simulator');
+ 	res.render(path + '/sensor-simulator', {
+	 		room: null, 
+	 		red: null,
+			green: null,
+			blue: null,
+			temp: null,
+			newtemp: null,
+			lux: null			
+			});
 });
 
 /***************************** Server Setup *****************************/

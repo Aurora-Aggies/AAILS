@@ -6,14 +6,45 @@
 <body>
 	<fieldset>
         <form action="/sensor-data" method="post">
+		  <label>Room</label>
 		<input name="r" type="text" class="ghost-input" type="number" value="1" required>
+		<p>
+		  <label>Red</label>
           <input name="red" type="text" type="number" class="ghost-input" required>
+		  <label>Green</label>
 		  <input name="green" type="text" type="number" class="ghost-input" required>
-		  <input name="blue" type="text" type="number" class="ghost-input" required>
+		  <label>Blue</label>
+		  <input name="blue" type="text" type="number" class="ghost-input" required></p><p>
+		  <label>Temperature</label>
+		  <input name="temp" type="text" type="number" class="ghost-input">
+		  <label>Brightness</label>
+		  <input name="lux" type="text" type="number" class="ghost-input" required></p>
           <input type="submit" class="ghost-button" value="Change temps">
         </form>
       </fieldset>
-
+	<p>
+		<% if(room !== null){ %>
+          <p>Room: <%= room %></p>
+        <% } %>
+		<% if(red !== null){ %>
+          <p>Red addition: <%= red %></p>
+        <% } %>
+		<% if(green !== null){ %>
+          <p>Green addition: <%= green %></p>
+        <% } %>
+		<% if(blue !== null){ %>
+          <p>Blue addition: <%= blue %></p>
+        <% } %>
+		<% if(temp !== null){ %>
+          <p>Goal Temperature: <%= temp %></p>
+        <% } %>
+		<% if(newtemp !== null){ %>
+          <p>Adjusted Temperature: <%= newtemp %></p>
+        <% } %>
+		<% if(lux !== null){ %>
+          <p>Brightness: <%= lux %></p>
+        <% } %>
+	</p>
 </body>
  
 </html>
