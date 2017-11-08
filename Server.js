@@ -28,6 +28,15 @@ app.get('/userview_lobby', function(req, res){
  		rooms: database.rooms});
 });
 
+app.post('/userview_lobby', function(req, res){ 
+	console.log(path + 'userview_lobby');
+
+	res.render(path + 'userview_lobby', {
+ 		name: "Rooms", 
+ 		rooms: database.rooms});
+});
+
+
 
 
 app.get('/userview/:id', function(req, res){ 
@@ -121,10 +130,20 @@ app.post('/new-brightness', function(req, res){
 		convertedValue = 1;
 	}
 
+	console.log(database.rooms[i-1].brightness);
 	database.rooms[i-1].changeBrightness(i, convertedValue);
+	console.log(database.rooms[i-1].brightness);
 	
 	//brightness has been changed since last ping
 	database.rooms[i-1].changeBrightnessChanged(true);
+
+	// render page again
+	var title = "Room " + i;
+	
+	res.render(path + '/userview', {
+ 		name: title, 
+ 		room: database.rooms[i-1]});
+
 });
 
 /***************************** Arduino Requests *****************************/
