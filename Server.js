@@ -225,7 +225,7 @@ app.post('/sensor-data', function (req, res) {
 	
 	//if temperature was not provided, calculate manually
 	if (!t1) {
-		t1 = colorTemp.rgb2temp([r1, r2, r3]);
+		t1 = colorTemp.rgb2temp([r1, g1, b1]);
 	}
 	
 	//flags for room status
@@ -237,7 +237,8 @@ app.post('/sensor-data', function (req, res) {
 	let current_hour = date.getHours();
 	let t3;
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
-		if (current_hour >= database.rooms[i-1].startValues[x]) {
+		console.log(database.rooms[i-1].tempValues[x]);
+		if (current_hour <= database.rooms[i-1].startValues[x]) {
 			t3 = database.rooms[i-1].tempValues[x];
 			break;
 		}
@@ -246,7 +247,16 @@ app.post('/sensor-data', function (req, res) {
 	//check threshold for compensation
 	//if below threshold, do nothing
 	if (Math.abs(t3 - t1) < 50) {
-		return;
+		//return;
+		res.render(path + '/sensor-simulator', {
+	 		room: null, 
+	 		red: null,
+			green: null,
+			blue: null,
+			temp: null,
+			newtemp: null,
+			lux: null			
+			});
 	}
 	
 	//flag warning because the lights are being compensated
@@ -271,7 +281,7 @@ app.post('/sensor-data', function (req, res) {
 		//add difference from current rgb to give corrected rgb
 		rgbx[0] += r2;
 		rgbx[1] += g2;
-		rgbx[2] += bx + b2;
+		rgbx[2] += b2;
 		
 		//adjust for bounds
 		//flag error because lights are beyond available compensation
@@ -304,14 +314,30 @@ app.post('/sensor-data', function (req, res) {
 	//room has been changed since last ping
 	database.rooms[i-1].changeRoomChanged(true);
 	
-	res.render(path + 'sensor-simulator');
+	res.render(path + '/sensor-simulator', {
+	 		room: i, 
+	 		red: r2,
+			green: g2,
+			blue: b2,
+			temp: database.rooms[i-1].tempValues[2],
+			newtemp: colorTemp.rgb2temp([r2 + rgb3[0],g2 + rgb3[1],b2 + rgb3[2]]),
+			lux: l1			
+			});
 })
 
 //simulator for testing
 app.get('/sensor-simulator', function(req, res){ 
 	console.log(path + 'sensor-simulator');
 	
- 	res.render(path + 'sensor-simulator');
+ 	res.render(path + '/sensor-simulator', {
+	 		room: null, 
+	 		red: null,
+			green: null,
+			blue: null,
+			temp: null,
+			newtemp: null,
+			lux: null			
+			});
 });
 
 /***************************** Server Setup *****************************/
