@@ -51,8 +51,14 @@ void setup() {
 
   //Start Ethernet Connection
   byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
-  Ethernet.begin(mac);
+  byte ip[] = { 192, 168, 1, 3 }; //IP of shield
+  Ethernet.begin(mac,ip);
   delay(500);
+
+  EthernetClient client;
+  IPAddress server(192, 168, 1, 4); //IP of server
+  if (!client.connect(server,3000))
+    netErrorAnim(2);
 
   if (!roomOn) hour = 0; //if room isn't on hour is 0
   start_time = 0;
@@ -63,7 +69,7 @@ void loop() {
   unsigned long elapse = end_time - start_time;
   //Server Connection handling
   EthernetClient client;
-  IPAddress server(192, 168, 1, 4);
+  IPAddress server(192, 168, 1, 4); //IP of server
   if (client.connect(server,3000)){
     client.stop();
     //Get all changes happening
@@ -82,6 +88,7 @@ void loop() {
   } else {
     //if can't connect to network, update time upon reconnect
     timeupdate = true;
+    if (!roomOn) netErrorAnim(4);
   }
 
   //Time & cycle handler

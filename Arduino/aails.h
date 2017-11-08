@@ -25,4 +25,6 @@ class RoomClass{
 	//void printAll();
 };
 
+void netErrorAnim(byte repeat);
+
 #endif
