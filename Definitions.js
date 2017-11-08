@@ -33,8 +33,8 @@
 		this.brightness = newBright;
 	}
 	
-	Room.prototype.changeCorrectedTempValueAtIndex = function (index, newTemp){
-		this.correctedTempValues[index] = newTemp;
+	Room.prototype.changeCorrectedTempValueAtIndex = function (index, newCorrectedTemp){
+		this.correctedTempValues[index] = newCorrectedTemp;
 	}
 	
 	Room.prototype.changeBrightnessChanged = function (newChanged){

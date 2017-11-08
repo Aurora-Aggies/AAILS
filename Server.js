@@ -221,7 +221,6 @@ app.post('/sensor-data', function (req, res) {
 	let g1 = req.body.green;
 	let b1 = req.body.blue;
 	let t1 = req.body.temp;
-	let l1 = req.body.lux;
 	
 	//if temperature was not provided, calculate manually
 	if (!t1) {
@@ -237,8 +236,7 @@ app.post('/sensor-data', function (req, res) {
 	let current_hour = date.getHours();
 	let t3;
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
-		console.log(database.rooms[i-1].tempValues[x]);
-		if (current_hour <= database.rooms[i-1].startValues[x]) {
+		if (current_hour >= database.rooms[i-1].startValues[x] && current_hour <= database.rooms[i-1].endValues[x]) {
 			t3 = database.rooms[i-1].tempValues[x];
 			break;
 		}
@@ -247,16 +245,15 @@ app.post('/sensor-data', function (req, res) {
 	//check threshold for compensation
 	//if below threshold, do nothing
 	if (Math.abs(t3 - t1) < 50) {
-		//return;
 		res.render(path + '/sensor-simulator', {
 	 		room: null, 
 	 		red: null,
 			green: null,
 			blue: null,
 			temp: null,
-			newtemp: null,
-			lux: null			
+			newtemp: null		
 			});
+		return;
 	}
 	
 	//flag warning because the lights are being compensated
@@ -273,10 +270,8 @@ app.post('/sensor-data', function (req, res) {
 	//for each phase in the cycle
 	for (x = 0; x < database.rooms[i-1].startValues.length; x++) {
 		//convert desired temperature to desired rgb
-		rgbx = colorTemp.temp2rgb(database.rooms[i-1].tempValues[x]);
-		rx = rgbx[0];
-		gx = rgbx[1];
-		bx = rgbx[2];
+		let tx = database.rooms[i-1].correctedTempValues[x];
+		rgbx = colorTemp.temp2rgb(tx);
 		
 		//add difference from current rgb to give corrected rgb
 		rgbx[0] += r2;
@@ -319,9 +314,8 @@ app.post('/sensor-data', function (req, res) {
 	 		red: r2,
 			green: g2,
 			blue: b2,
-			temp: database.rooms[i-1].tempValues[2],
-			newtemp: colorTemp.rgb2temp([r2 + rgb3[0],g2 + rgb3[1],b2 + rgb3[2]]),
-			lux: l1			
+			temp: t3,
+			newtemp: colorTemp.rgb2temp([r2 + rgb3[0],g2 + rgb3[1],b2 + rgb3[2]])	
 			});
 })
 
@@ -335,8 +329,7 @@ app.get('/sensor-simulator', function(req, res){
 			green: null,
 			blue: null,
 			temp: null,
-			newtemp: null,
-			lux: null			
+			newtemp: null	
 			});
 });
 
