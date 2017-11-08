@@ -146,6 +146,31 @@ app.post('/new-brightness', function(req, res){
 
 });
 
+// turn on / off power
+app.post('/onoffpower', function(req, res){
+	let i = req.body.room;
+	let b = req.body.newValue;
+
+	//console.log(database.rooms[i-1].lightOn);
+	if(b == "0")
+	{
+		database.rooms[i-1].changelightOn(i, false);
+	}
+	else
+	{
+		database.rooms[i-1].changelightOn(i, true);
+	}
+	//console.log(database.rooms[i-1].lightOn);
+
+	// render page again
+	var title = "Room " + i;
+	
+	res.render(path + '/userview', {
+ 		name: title, 
+ 		room: database.rooms[i-1]});
+
+});
+
 /***************************** Arduino Requests *****************************/
 
 //returns current hour 0-23 (concatenated, not rounded)
