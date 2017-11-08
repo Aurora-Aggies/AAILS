@@ -60,6 +60,31 @@
 			padding-left: 0.5em;
 			padding-right: 0.5em;
 		}
+
+		/* Red Error */
+		#red_error {
+			text-align: left;
+			display: inline;
+	    	float: none;
+			margin: 2em;
+			width: 70%;
+		}
+
+		.red_error_title {
+			padding-left: 0.2em;
+			padding-top: 0.2em;
+			padding-bottom: 0.2em;
+			margin-bottom: 0.2em;
+			background: #FFD2D2;
+			color: #D8000C;
+			font-size: 20px;
+			border-bottom: 1px solid #9F6000;
+		}
+
+		#red_error p {
+			padding-left: 0.5em;
+			padding-right: 0.5em;
+		}
     </style>
 </head>
 <body>
@@ -84,25 +109,31 @@
 
 		<!-- Slider -->
 		<div id="slidecontainer">
-		  <input type="range" min="1" max="100" step="1"
-
-		  
-		  		value="<%=room.brightness * 100%>"
-		  	
-
-		  class="slider" id="myRange">
-
+		  <input type="range" min="1" max="100" step="1" value="<%=room.brightness * 100%>" class="slider" id="myRange">
 		  <p> Value: <span id="valueText"></span></p>
 		</div>
 
 		<!-- Alerts -->
-		<div id="yellow_error">
-			<div class="yellow_error_title">
-				<i class="pe-7s-attention" ></i>
-				<span> Uh oh!</span>
+		<% if (room.lightsDegraded === true) { %>
+		    <div id="red_error">
+				<div class="red_error_title">
+					<i class="pe-7s-attention" ></i>
+					<span>Warning</span>
+				</div>
+				<p>Lights have degraded. The system can no longer compensate for this degregation. <b>Please replace your lights.</b></p>
 			</div>
-			<p id="yellow_error_msg">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc suscipit gravida tellus. Etiam venenatis aliquam sem. Nam dolor lorem, placerat sed, condimentum in, volutpat in, nibh. Maecenas consequat augue in urna. Proin porttitor. Aenean ac erat. </p>
-		</div>
+		<% } else if (room.lightsCompensating === true) { %>
+		    <div id="yellow_error">
+				<div class="yellow_error_title">
+					<i class="pe-7s-attention" ></i>
+					<span>Caution</span>
+				</div>
+				<p>The lights are degrading. The system is compensating for this degregation. The lights will need to be replaced soon.</p>
+			</div>
+		<% } else { %>
+		    <!-- show nada :) -->
+		<% } %>
+
 	</div>
 	<script>
 		// Slider
