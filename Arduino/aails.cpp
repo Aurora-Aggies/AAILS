@@ -5,7 +5,7 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
 	size = sz;
-	br_hold = 0; //default brightness
+	br_hold = 254; //default brightness
 	for (byte i=0; i<sz;i++){
 		t[i] = tmp[i]; //sets the color temps for this instance
 		br[i] = bright[i]; //sets the brightnesses for this instance
@@ -24,6 +24,8 @@ void RoomClass::cycle(byte hour, unsigned long elapse){
 	float eratio = (float)elapse/5000;
 	Serial.print("Hour: ");
 	Serial.println(hour);
+	Serial.print("currentPhase");
+	Serial.println(currentPhase);
 	while(hour > ec){
 		currentPhase++;
 		ec = end[currentPhase];

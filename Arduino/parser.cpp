@@ -45,7 +45,7 @@ void getRoom(boolean  &bs, RoomClass &rc, IPAddress server){
 
 		bs = true; //change boolean so we know RoomClass is initialized
 		EEPROM.update(0,1); //EEPROM store bool above
-		EEPROM.put(2,room); //EEPROM store room class
+		EEPROM.put(1,room); //EEPROM store room class
     }
 }
 
@@ -90,7 +90,6 @@ void changeBr(RoomClass &rc, IPAddress server){
     }
 	String c = parseRequest(rs);
 	byte b = c.toInt();
-	EEPROM.update(1,b);
 	rc.set_br(c.toInt());
 	
 }
