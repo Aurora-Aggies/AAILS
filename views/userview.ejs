@@ -72,7 +72,14 @@
 		<span id="roomNum" style="display:none;" value="<%= room.ID %>"> </span>
 
 		<!-- Giant power button -->
-		<p id="power"><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
+		<p id="power"
+			 <%if (room.lightOn == true){%>
+		  		style="color:green;"
+		  	<% } else{%>
+		  		style="color:red;"
+		  	<%}%>
+
+		><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
 
 
 		<!-- Slider -->
@@ -154,19 +161,73 @@
 
 			if(currentColor == "green")
 			{
-				power.style.color = "red";
-				note.style.display = 'initial';
+				//power.style.color = "red";
+				var f = document.createElement("form");
+				f.setAttribute('method',"post");
+				f.setAttribute('action',"/onoffpower");
+
+				var i = document.createElement("input"); //input element, text
+				i.setAttribute('type',"text");
+				i.setAttribute('name',"room");
+				i.setAttribute('value', roomNum.getAttribute('value'));
+
+
+				var b = document.createElement("input"); //input element, text
+				b.setAttribute('type',"text");
+				b.setAttribute('name',"newValue");
+				b.setAttribute('value', "0");
+
+				var s = document.createElement("input"); //input element, Submit button
+				s.setAttribute('type',"submit");
+				s.setAttribute('value',"Submit");
+				s.setAttribute('id', 'submit_button_power');
+
+				f.appendChild(i);
+				f.appendChild(b);
+				f.appendChild(s);
+
+
+				f.style.display = 'none';
+				document.getElementsByTagName('body')[0].appendChild(f);
+				document.getElementById('submit_button_power').click();
+
+				f.remove();
 			}
 			else if (currentColor == "red")
 			{
-				power.style.color = "green";
-				note.style.display = 'initial';
+				//power.style.color = "green";
+				var f = document.createElement("form");
+				f.setAttribute('method',"post");
+				f.setAttribute('action',"/onoffpower");
+
+				var i = document.createElement("input"); //input element, text
+				i.setAttribute('type',"text");
+				i.setAttribute('name',"room");
+				i.setAttribute('value', roomNum.getAttribute('value'));
+
+
+				var b = document.createElement("input"); //input element, text
+				b.setAttribute('type',"text");
+				b.setAttribute('name',"newValue");
+				b.setAttribute('value', "1");
+
+				var s = document.createElement("input"); //input element, Submit button
+				s.setAttribute('type',"submit");
+				s.setAttribute('value',"Submit");
+				s.setAttribute('id', 'submit_button_power');
+
+				f.appendChild(i);
+				f.appendChild(b);
+				f.appendChild(s);
+
+
+				f.style.display = 'none';
+				document.getElementsByTagName('body')[0].appendChild(f);
+				document.getElementById('submit_button_power').click();
+
+				f.remove();
 			}
-			else
-			{
-				// set the color to the correct value
-				power.style.color = "green";
-			}
+			
 		}
 
 		// Back Button

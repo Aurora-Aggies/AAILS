@@ -36,9 +36,7 @@ void setup() {
   //If room is held begin intialization
   if (EEPROM.read(0) == 1){
     roomOn = true;
-    EEPROM.get(2,mainRoom); //Gets RoomClass
-    byte brightness = EEPROM.read(1); //Get Brightness
-    mainRoom.set_br(brightness);
+    EEPROM.get(1,mainRoom); //Gets RoomClass
     if (sdOn){
       File f;
       f = SD.open("time.txt",FILE_READ);
@@ -53,39 +51,25 @@ void setup() {
 
   //Start Ethernet Connection
   byte mac[] = { 0x2C, 0xF7, 0xF1, 0x08, 0x05, 0x4D };
-  Ethernet.begin(mac);
+  byte ip[] = { 192, 168, 1, 3 }; //IP of shield
+  Ethernet.begin(mac,ip);
   delay(500);
+
+  EthernetClient client;
+  IPAddress server(192, 168, 1, 4); //IP of server
+  if (!client.connect(server,3000))
+    netErrorAnim(2);
 
   if (!roomOn) hour = 0; //if room isn't on hour is 0
   start_time = 0;
 }
 
 void loop() {
-  //Time & cycle handler
   unsigned long end_time = millis();
   unsigned long elapse = end_time - start_time;
-  if (elapse >= 5000){
-    //Every 5 seconds will represent an hour
-    start_time = millis();
-    hour += elapse/5000; //update hour
-    elapse -= 5000; //get any leftover time
-    if (hour > 23)
-      hour = 0;
-    if (sdOn && roomOn){
-      //save the hour
-      SD.remove("time.txt");
-      File f;
-      f = SD.open("time.txt",FILE_WRITE);
-      f.write(hour);
-      f.close();
-    }
-  }
-  if (roomOn)
-    mainRoom.cycle(hour,elapse); //cycle function
-
   //Server Connection handling
   EthernetClient client;
-  IPAddress server(192, 168, 137, 1);
+  IPAddress server(192, 168, 1, 4); //IP of server
   if (client.connect(server,3000)){
     client.stop();
     //Get all changes happening
@@ -104,5 +88,28 @@ void loop() {
   } else {
     //if can't connect to network, update time upon reconnect
     timeupdate = true;
+    if (!roomOn) netErrorAnim(4);
   }
+
+  //Time & cycle handler
+  if (elapse >= 5000){
+    //Every 5 seconds will represent an hour
+    start_time = millis();
+    hour += elapse/5000; //update hour
+    elapse -= 5000; //get any leftover time
+    if (hour > 23){
+      mainRoom.cycle(hour,elapse); //cycle function
+      hour = 0;
+    }
+    if (sdOn && roomOn){
+      //save the hour
+      SD.remove("time.txt");
+      File f;
+      f = SD.open("time.txt",FILE_WRITE);
+      f.write(hour);
+      f.close();
+    }
+  }
+  if (roomOn)
+    mainRoom.cycle(hour,elapse); //cycle function
 }

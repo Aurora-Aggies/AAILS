@@ -17,7 +17,6 @@
                         <div class="content table-responsive table-full-width">
                             <table class="table table-hover">
                                 <thead>
-                                    <th>ID</th>
                                     <th>Phase</th>
                                     <th>Temperature</th>
                                     <th>Lumens</th>
@@ -27,18 +26,34 @@
                                 <tbody>
                                     <% for (var i = 0; i < room.tempValues.length; i++) { %>
                                         <tr>
-                                            <td><%= room.ID %></td>
                                             <td><%= phases[i] %></td>
                                             <td><%= room.tempValues[i] %></td>
                                             <td><%= room.lumensValues[i] %></td>
                                             <td><%= room.startValues[i] %></td>
                                             <td><%= room.endValues[i] %></td>
-                                            <td><%= room.brightness %></td>
                                         </tr>
                                     <% } %>
                                 </tbody>
                             </table>
+                        </div>
+                        <div>
+                            <p id="power"
+                                 <%if (room.lightOn == true){%>
+                                    style="color:green; font-size: 80px;"
+                                <% } else{%>
+                                    style="color:red; font-size: 80px;"
+                                <%}%>
+                            ><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
 
+                            <p>
+                              <%if ((room.brightness /255) == 0){%>
+                                    Current Brightness: 100 
+                                <% } else{%>
+                                    Current Brightness: <%= (room.brightness /255)*100%>
+                                <%}%>
+
+                              </p>
+                            </div>
                         </div>
                     </div>
                 </div>
