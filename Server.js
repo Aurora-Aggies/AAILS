@@ -223,7 +223,8 @@ app.post('/sensor-data', function (req, res) {
 	let t1 = req.body.temp;
 	let l1 = req.body.lux;
 	
-	//TODO: add brightness and threshold and warning
+	//flags for room status
+	let error = false;
 	let warning = false;
 	
 	//find currently desired temperature in cycle
@@ -238,20 +239,19 @@ app.post('/sensor-data', function (req, res) {
 	}
 	
 	//check threshold for compensation
-	if (abs(t3 - t1) < 50) {
-		
-	}	
+	//if below threshold, do nothing
+	if (Math.abs(t3 - t1) < 50) {
+		return;
+	}
+	
+	//flag warning because the lights are being compensated
+	warning = true;
 	
 	//Calculate rgb difference
 	let rgb3 = colorTemp.temp2rgb(t3);
 	let r2 = rgb3[0] - r1;
 	let g2 = rgb3[1] - g1;
 	let b2 = rgb3[2] - b1;
-	
-	//console.log("");
-	//console.log(rgb3);
-	//console.log([r1, g1, b1]);
-	//console.log([r2, g2, b2]);
 	
 	let rgbx;
 	
@@ -268,31 +268,31 @@ app.post('/sensor-data', function (req, res) {
 		rgbx[1] += g2;
 		rgbx[2] += bx + b2;
 		
-		//adjust for bounds 
+		//adjust for bounds
+		//flag error because lights are beyond available compensation
 		if (rgbx[0] > 255) {
 			rgbx[0] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[0] < 0) {
 			rgbx[0] = 0;
-			warning = true;
+			error = true;
 		}
 		if (rgbx[1] > 255) {
 			rgbx[1] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[1] < 0) {
 			rgbx[1] = 0;
-			warning = true;
+			error = true;
 		}
 		if (rgbx[2] > 255) {
 			rgbx[2] = 255;
-			warning = true;
+			error = true;
 		} else if (rgbx[2] < 0) {
 			rgbx[2] = 0;
-			warning = true;
+			error = true;
 		}
 		
 		//convert corrected rgb to corrected temperature and update variable
-		//console.log(colorTemp.rgb2temp(rgbx));
 		database.rooms[i-1].changeCorrectedTempValueAtIndex(x, colorTemp.rgb2temp(rgbx));
 	}
 	
