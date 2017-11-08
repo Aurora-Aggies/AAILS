@@ -16,9 +16,7 @@
 		  <label>Blue</label>
 		  <input name="blue" type="text" type="number" class="ghost-input" required></p><p>
 		  <label>Temperature</label>
-		  <input name="temp" type="text" type="number" class="ghost-input">
-		  <label>Brightness</label>
-		  <input name="lux" type="text" type="number" class="ghost-input" required></p>
+		  <input name="temp" type="text" type="number" class="ghost-input" placeholder"Optional"></p>
           <input type="submit" class="ghost-button" value="Change temps">
         </form>
       </fieldset>
@@ -40,9 +38,6 @@
         <% } %>
 		<% if(newtemp !== null){ %>
           <p>Adjusted Temperature: <%= newtemp %></p>
-        <% } %>
-		<% if(lux !== null){ %>
-          <p>Brightness: <%= lux %></p>
         <% } %>
 	</p>
 </body>
