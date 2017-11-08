@@ -20,33 +20,15 @@
 	    	color: green;
 	    }
 
-	    /* Saved Changes */
-
-	    #note {
-	    	display: none;
-	    	color: #00529B;
-		    position: absolute;
-		    z-index: 101;
-		    top: 0;
-		    left: 0;
-		    right: 0;
-		    background: #BDE5F8;
-		    text-align: center;
-		    line-height: 2.5;
-		    overflow: hidden; 
-		    -webkit-box-shadow: 0 0 5px black;
-		    -moz-box-shadow:    0 0 5px black;
-		    box-shadow:         0 0 5px black;
-		}
-
-		@-webkit-keyframes slideDown {
-		    0%, 100% { -webkit-transform: translateY(-50px); }
-		    10%, 90% { -webkit-transform: translateY(0px); }
-		}
-		@-moz-keyframes slideDown {
-		    0%, 100% { -moz-transform: translateY(-50px); }
-		    10%, 90% { -moz-transform: translateY(0px); }
-		}
+	    #back{
+	    	font-family: Helvetica, Arial, sans-serif;
+	    	display: inline;
+	    	float: none;
+	    	font-size: 20px;
+	    	color: black;
+	    	padding: 0;
+	    	margin: 0;
+	    }
 
 		/* Slider */
 		#slidecontainer {
@@ -82,11 +64,12 @@
 </head>
 <body>
 	<div id="wrapper">
+		<!-- Back Button -->
+		<p id="back" onclick="onclick_back()"><i id="backIcon" class="pe-7s-angle-left"></i>Back</p>
+		<p></p>
+
+		<!-- Keep safe the room num :) -->
 		<span id="roomNum" style="display:none;" value="<%= room.ID %>"> </span>
-		<!-- Saved -->
-		<div id="note">
-		    Changes saved. <a id="close">[close]</a>
-		</div>
 
 		<!-- Giant power button -->
 		<p id="power"><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
@@ -117,24 +100,19 @@
 		</div>
 	</div>
 	<script>
-		// Saved changes 
-		 close = document.getElementById("close");
-		 close.addEventListener('click', function() {
-		   note = document.getElementById("note");
-		   note.style.display = 'none';
-		 }, false);
-
 		// Slider
 		var slider = document.getElementById("myRange");
 		var sliderText = document.getElementById("valueText");
 		sliderText.innerHTML = slider.value;
+		if(slider.value == 0){
+			sliderText.innerHTML = 1;
+		}
 
 		var roomNum = document.getElementById("roomNum");
 
 		slider.oninput = function() {
 			sliderText.innerHTML = this.value;
 			// send info to backend
-			note.style.display = 'initial';
 
 			var f = document.createElement("form");
 			f.setAttribute('method',"post");
@@ -189,6 +167,26 @@
 				// set the color to the correct value
 				power.style.color = "green";
 			}
+		}
+
+		// Back Button
+		function onclick_back(){
+			var f = document.createElement("form");
+			f.setAttribute('method',"post");
+			f.setAttribute('action',"/userview_lobby");
+
+			var s = document.createElement("input"); //input element, Submit button
+			s.setAttribute('type',"submit");
+			s.setAttribute('value',"Submit");
+			s.setAttribute('id', 'submit_button_back');
+
+			f.appendChild(s);
+
+			f.style.display = 'none';
+			document.getElementsByTagName('body')[0].appendChild(f);
+			document.getElementById('submit_button_back').click();
+
+			f.remove();
 		}
 	</script>
 
