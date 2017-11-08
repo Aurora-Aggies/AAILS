@@ -213,7 +213,8 @@ app.post('/sensor-data', function (req, res) {
 	let r1 = req.body.red;
 	let g1 = req.body.green;
 	let b1 = req.body.blue;
-	let t1 = colorTemp.rgb2temp([r1, r2, r3]);
+	let t1 = req.body.temp;
+	let l1 = req.body.lux;
 	
 	//TODO: add brightness and threshold and warning
 	let warning = false;
