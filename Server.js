@@ -123,12 +123,16 @@ app.post('/new-brightness', function(req, res){
 	let b = req.body.brightness;
 
 	// convert the brightness 
-	let convertedValue = Math.floor((parseInt(b)/100) * 255);
+	let convertedValue = parseInt(b)*0.01;
 
-	if(convertedValue == 0)
+	if(convertedValue <= 0.0)
 	{
-		convertedValue = 1;
+		convertedValue = 0.01;
 	}
+
+	// make sure it is only 0.00 place values
+    var str_convertedValue_cut = convertedValue.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+    convertedValue = parseFloat(str_convertedValue_cut);
 
 	//console.log(database.rooms[i-1].brightness);
 	database.rooms[i-1].changeBrightness(i, convertedValue);
