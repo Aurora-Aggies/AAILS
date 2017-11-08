@@ -223,6 +223,11 @@ app.post('/sensor-data', function (req, res) {
 	let t1 = req.body.temp;
 	let l1 = req.body.lux;
 	
+	//if temperature was not provided, calculate manually
+	if (!t1) {
+		t1 = colorTemp.rgb2temp([r1, r2, r3]);
+	}
+	
 	//flags for room status
 	let error = false;
 	let warning = false;
