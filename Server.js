@@ -123,16 +123,16 @@ app.post('/new-brightness', function(req, res){
 	let b = req.body.brightness;
 
 	// convert the brightness 
-	let convertedValue = (parseInt(b)/100) * 255;
+	let convertedValue = Math.floor((parseInt(b)/100) * 255);
 
 	if(convertedValue == 0)
 	{
 		convertedValue = 1;
 	}
 
-	console.log(database.rooms[i-1].brightness);
+	//console.log(database.rooms[i-1].brightness);
 	database.rooms[i-1].changeBrightness(i, convertedValue);
-	console.log(database.rooms[i-1].brightness);
+	//console.log(database.rooms[i-1].brightness);
 	
 	//brightness has been changed since last ping
 	database.rooms[i-1].changeBrightnessChanged(true);
