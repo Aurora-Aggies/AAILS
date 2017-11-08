@@ -30,7 +30,7 @@
 		this.endValues[index] = newEnd;
 	}
 	
-	Room.prototype.changelightOn = function (index, newLightOn){
+	Room.prototype.changeLightOn = function (newLightOn){
 		this.lightOn = newLightOn;
 	}
 	

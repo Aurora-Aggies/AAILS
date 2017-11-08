@@ -320,6 +320,8 @@ app.post('/sensor-data', function (req, res) {
 			});
 })
 
+/***************************** Test Pages *****************************/
+
 //simulator for testing
 app.get('/sensor-simulator', function(req, res){ 
 	console.log(path + 'sensor-simulator');
@@ -333,6 +335,68 @@ app.get('/sensor-simulator', function(req, res){
 			newtemp: null	
 			});
 });
+
+//simulator for testing
+app.get('/master-test', function(req, res){ 
+	console.log(path + 'master-test');
+	
+	let i = req.query.r;
+ 	res.render(path + '/master-test', {
+			rooms: database.rooms,
+	 		room: i
+			});
+});
+
+app.post('/master-test-light', function(req, res){
+	let i = req.body.r;
+	
+	//toggle brightness
+	if (database.rooms[i-1].lightOn) {
+		database.rooms[i-1].changeLightOn(false);
+	} else {
+		database.rooms[i-1].changeLightOn(true);
+	}
+	
+	//brightness has been changed since last ping
+	database.rooms[i-1].changeBrightnessChanged(true);
+	
+	res.render(path + '/master-test', {
+			rooms: database.rooms,
+	 		room: i
+			});
+
+});
+
+app.post('/master-test-brightness', function(req, res){
+	let i = req.body.r;
+	let b = req.body.brightness;
+
+	database.rooms[i-1].changeBrightness(i-1, b);
+	
+	database.rooms[i-1].changeBrightnessChanged(true);
+	
+	res.render(path + '/master-test', {
+			rooms: database.rooms,
+	 		room: i
+			});
+
+});
+
+app.post('/master-test-room', function(req, res){
+	let i = req.body.r;
+	let t = req.body.temp;
+
+	database.rooms[i-1].changeCorrectedTempValueAtIndex(i-1, t);
+	
+	database.rooms[i-1].changeRoomChanged(true);
+	
+	res.render(path + '/master-test', {
+			rooms: database.rooms,
+	 		room: i
+			});
+
+});
+
 
 /***************************** Server Setup *****************************/
 

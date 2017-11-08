@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+	
+</head>
+<body>
+	<p>
+		<% if(room !== null){ %>
+          <p>Room: <%= room %></p>
+        <% } %>
+		<% if(rooms !== null){ %>
+          <p>Light On: <%= rooms[room-1].lightOn %></p>
+		  <p>Brightness: <%= rooms[room-1].brightness %></p>
+		  <p>Brightness Changed: <%= rooms[room-1].brightnessChanged %></p>
+		  <p>First Lighting Temp: <%= rooms[room-1].correctedTempValues[0] %></p>
+		  <p>First Lighting Start Time: <%= rooms[room-1].startValues[0] %></p>
+		  <p>First Lighting End Time: <%= rooms[room-1].endValues[0] %></p>
+		  <p>Room Changed: <%= rooms[room-1].roomChanged %></p>
+        <% } %>
+	</p>
+	<fieldset>
+        <form action="/master-test-light" method="post">
+			<label>Light On</label>
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Toggle Light">
+        </form>
+      </fieldset>
+	  <fieldset>
+        <form action="/master-test-brightness" method="post">
+			<label>Brightness</label>
+			<input name="brightness" type="text" class="ghost-input" type="number">
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Update Brightness">
+        </form>
+      </fieldset>
+	<fieldset>
+        <form action="/master-test-room" method="post">
+			<label>First Temperature</label>
+			<input name="temp" type="text" type="number" class="ghost-input">
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Update Room">
+        </form>
+      </fieldset>
+	<p>
+	</p>
+</body>
+ 
+</html>
