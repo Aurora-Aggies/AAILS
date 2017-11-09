@@ -89,8 +89,8 @@ void changeBr(RoomClass &rc, IPAddress server){
         rs += g;
     }
 	String c = parseRequest(rs);
-	byte b = c.toInt();
-	rc.set_br(c.toInt());
+	float b = c.toFloat();
+	rc.set_br(b);
 	
 }
 

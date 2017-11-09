@@ -5,7 +5,7 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
 	size = sz;
-	br_hold = 254; //default brightness
+	br_scale = 1.0; //default brightness
 	for (byte i=0; i<sz;i++){
 		t[i] = tmp[i]; //sets the color temps for this instance
 		br[i] = bright[i]; //sets the brightnesses for this instance
@@ -28,8 +28,10 @@ void RoomClass::cycle(byte hour, unsigned long elapse){
 	float eratio = (float)elapse/5000;
 	Serial.print("Hour: ");
 	Serial.println(hour);
-	Serial.print("currentPhase");
+	Serial.print("currentPhase: ");
 	Serial.println(currentPhase);
+	Serial.print("br_scale: ");
+	Serial.println(br_scale);
 	while(hour > ec){
 		currentPhase++;
 		ec = end[currentPhase];
@@ -39,10 +41,10 @@ void RoomClass::cycle(byte hour, unsigned long elapse){
 		if (currentPhase >= size) currentPhase = 0;
 		Serial.println(t[currentPhase]);
 		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+		int scale =  br[currentPhase] * br_scale;
 		light.begin();
 		for(byte i=0;i<60;i++)
-			light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
-		light.setBrightness(br_hold); //Keep eye
+			light.setPixelColor(i, temp.color(t[currentPhase],scale));
 		light.show();
 	} else {
 		//Used to transition from one phase to the next
@@ -58,22 +60,26 @@ void RoomClass::cycle(byte hour, unsigned long elapse){
 		bincr = (bdiff/dur) * mult;
 		
 		Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+		int scale = (br[currentPhase] + bincr) * br_scale;
+		Serial.print("scale: ");
+		Serial.println(scale);
 		light.begin();
 		for(byte i=0;i<60;i++)
-			light.setPixelColor(i, temp.color(t[currentPhase] + tincr,br[currentPhase] + bincr));
-		light.setBrightness(br_hold); //Keep eye
+			light.setPixelColor(i, temp.color(t[currentPhase] + tincr,scale));
 		light.show();
 	}
 	
 }
 
-void RoomClass::set_br(byte b){
-	br_hold = b;
+void RoomClass::set_br(float b){
+	br_scale = b;
 	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
+	int scale = br[currentPhase] * br_scale;
+	Serial.print("scale: ");
+	Serial.println(scale);
 	light.begin();
 	for(byte i=0;i<60;i++)
-		light.setPixelColor(i, temp.color(t[currentPhase],br[currentPhase]));
-	light.setBrightness(b);
+		light.setPixelColor(i, temp.color(t[currentPhase],scale));
 	light.show();
 }
 
