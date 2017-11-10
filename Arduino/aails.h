@@ -13,14 +13,14 @@ class RoomClass{
 	byte end [24];
 	byte size;
 	byte currentPhase; //Stores the current phase
-	byte br_hold;
+	float br_scale;
 	int tincr; //temp incrementor
 	int bincr; //brightness incrementor
 	
 	public:
 	void initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz); //initializes the cycle
 	void cycle(byte hour, unsigned long elapse); //Goes to next phase in cycle (Call consecutively if possible)
-	void set_br(byte b);
+	void set_br(float b);
 	void updateTime(byte hour);
 	//void printAll();
 };
