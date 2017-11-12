@@ -18,6 +18,8 @@
 		  <p>Room Changed: <%= rooms[room-1].roomChanged %></p>
 		  <p>Compensating: <%= rooms[room-1].lightsCompensating %></p>
 		  <p>Degraded Past Compensation: <%= rooms[room-1].lightsDegraded %></p>
+		  <p>People in the room: <%= rooms[room-1].names%></p>
+		  <p>Power Save Mode: <%= database.powerSaveMode%></p>
         <% } %>
 	</p>
 	<fieldset>
@@ -27,6 +29,13 @@
 			<input type="submit" class="ghost-button" value="Toggle Light">
         </form>
       </fieldset>
+	  <fieldset>
+		<form action="/master-test-powersave" method="post">
+			<label>Power Save Mode</label>
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Toggle PSM">
+        </form>
+	  </fieldset>
 	  <fieldset>
         <form action="/master-test-brightness" method="post">
 			<label>Brightness</label>
@@ -43,6 +52,12 @@
 			<input type="submit" class="ghost-button" value="Update Room">
         </form>
       </fieldset>
+	  <fieldset>
+		<form action="/master-test" method="get">
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Refresh">
+        </form>
+	  </fieldset>
 	<p>
 	</p>
 </body>
