@@ -21,6 +21,7 @@ class RoomClass{
 	void initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz); //initializes the cycle
 	void cycle(byte hour, unsigned long elapse); //Goes to next phase in cycle (Call consecutively if possible)
 	void set_br(float b);
+	float get_br();
 	void updateTime(byte hour);
 	//void printAll();
 };

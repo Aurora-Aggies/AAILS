@@ -1,8 +1,6 @@
 #include "aails.h"
 
 void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], byte sz){
-	Adafruit_NeoPixel light = Adafruit_NeoPixel(60, 6, NEO_GRB + NEO_KHZ800);
-	light.begin(); //Allows lights to be modified
 	temp.RGB(); //Initializes coloTemp class to RGB values instead of GRB
 	size = sz;
 	br_scale = 1.0; //default brightness
@@ -12,10 +10,6 @@ void RoomClass::initCycle(int tmp [], byte bright [], byte st [], byte ed [], by
 		start[i] = st[i]; //sets start times
 		end[i] = ed[i]; //sets end times
 	}
-	//Set every pixel to first color temp and brightness value
-	for(byte i=0;i<60;i++)
-		light.setPixelColor(i, temp.color(t[0],br[0]));
-	light.show(); //Lights will light up with this
 	currentPhase = 0; //Initialize current phase
 }
 
@@ -90,6 +84,10 @@ void RoomClass::updateTime(byte hour){
 		currentPhase++;
 		ec = end[currentPhase];
 	}	
+}
+
+float RoomClass::get_br(){
+	return br_scale;
 }
 
 void netErrorAnim(byte repeat){

@@ -8,7 +8,7 @@
 
 boolean roomOn = false;
 boolean sdOn = false;
-boolean timeupdate = true;
+boolean updateArduino = true;
 unsigned long start_time;
 byte hour;
 RoomClass mainRoom;
@@ -47,6 +47,8 @@ void setup() {
     } else {
       hour = 0;
     }
+    if (mainRoom.get_br() == 0.0)
+      mainRoom.set_br(1.0);
   }
 
   //Start Ethernet Connection
@@ -56,7 +58,7 @@ void setup() {
   delay(500);
 
   EthernetClient client;
-  IPAddress server(192, 168, 1, 4); //IP of server
+  IPAddress server(192, 168, 1, 2); //IP of server
   if (!client.connect(server,3000))
     netErrorAnim(2);
 
@@ -67,19 +69,23 @@ void setup() {
 void loop() {
   unsigned long end_time = millis();
   unsigned long elapse = end_time - start_time;
+  boolean room_change = false;
+  boolean bright_change = false;
   //Server Connection handling
   EthernetClient client;
-  IPAddress server(192, 168, 1, 4); //IP of server
+  IPAddress server(192, 168, 1, 2); //IP of server
   if (client.connect(server,3000)){
     client.stop();
     //Get all changes happening
-    boolean room_change = getChanges(server,0);
-    boolean bright_change = getChanges(server,1);
-    if (timeupdate){
-      Serial.println("Updating time...");
+    room_change = getChanges(server,0);
+    bright_change = getChanges(server,1);
+    if (updateArduino){
+      Serial.println("Updating Arduino...");
       hour = updateTime(server);
       mainRoom.updateTime(hour);
-      timeupdate = false;
+      getRoom(roomOn, mainRoom, server); 
+      changeBr(mainRoom,server);
+      updateArduino = false;
     }
     if (room_change || !roomOn)
       getRoom(roomOn, mainRoom, server); //change room values
@@ -87,7 +93,7 @@ void loop() {
       changeBr(mainRoom,server); //change brightness values
   } else {
     //if can't connect to network, update time upon reconnect
-    timeupdate = true;
+    updateArduino = true;
     if (!roomOn) netErrorAnim(4);
   }
 
