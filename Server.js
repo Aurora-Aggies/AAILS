@@ -477,6 +477,12 @@ app.post('/astronaut-detected', function(req, res){
 	
 	for (j = 0; j < database.rooms.length; j++)
 		console.log('People in room ' + (j+1) + ': ', database.rooms[j].names);
+	
+	res.render(path + '/master-test', {
+			database: database,
+			rooms: database.rooms,
+	 		room: i
+			});
 });
 
 app.post('/master-test-powersave', function(req, res){
