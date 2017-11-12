@@ -37,6 +37,14 @@
         </form>
 	  </fieldset>
 	  <fieldset>
+        <form action="/astronaut-detected" method="post">
+			<label>Person</label>
+			<input name="n" type="text" class="ghost-input" type="text">
+			<input name="r" type="text" value="<%= room %>" type="number" class="ghost-input" hidden>
+			<input type="submit" class="ghost-button" value="Check-in/out">
+        </form>
+      </fieldset>
+	  <fieldset>
         <form action="/master-test-brightness" method="post">
 			<label>Brightness</label>
 			<input name="brightness" type="text" class="ghost-input" type="number">
