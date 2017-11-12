@@ -15,6 +15,8 @@
 		
 		this.lightsCompensating = false;
 		this.lightsDegraded = false;
+		
+		this.names = [];
 	}
 
 	Room.prototype.changeTempValueAtIndex = function (index, newTemp){

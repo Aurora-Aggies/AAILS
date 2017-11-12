@@ -375,6 +375,7 @@ app.get('/master-test', function(req, res){
 	
 	let i = req.query.r;
  	res.render(path + '/master-test', {
+			database: database,
 			rooms: database.rooms,
 	 		room: i
 			});
@@ -394,6 +395,7 @@ app.post('/master-test-light', function(req, res){
 	database.rooms[i-1].changeBrightnessChanged(true);
 	
 	res.render(path + '/master-test', {
+			database: database,
 			rooms: database.rooms,
 	 		room: i
 			});
@@ -415,6 +417,7 @@ app.post('/master-test-brightness', function(req, res){
 	database.rooms[i-1].changeBrightnessChanged(true);
 	
 	res.render(path + '/master-test', {
+			database: database,
 			rooms: database.rooms,
 	 		room: i
 			});
@@ -430,12 +433,77 @@ app.post('/master-test-room', function(req, res){
 	database.rooms[i-1].changeRoomChanged(true);
 	
 	res.render(path + '/master-test', {
+			database: database,
 			rooms: database.rooms,
 	 		room: i
 			});
 
 });
 
+/***************************** Kevin RFID *****************************/
+app.post('/astronaut-detected', function(req, res){
+	let i = req.body.r;
+	let nameTest = req.body.n; //Gets array of names
+	
+	function dumbo(element) {
+		return element == nameTest;
+	}
+	
+	let ind = -1;
+	for(j = 0; j < database.rooms.length; j++){
+		if(j == (i - 1)) {
+			ind = database.rooms[j].names.findIndex(dumbo);
+			if (ind > -1) database.rooms[j].names.splice(ind,1);
+			else database.rooms[i-1].names.push(nameTest);
+		}
+		else {
+			ind = database.rooms[j].names.findIndex(dumbo);
+			if (ind > -1)
+				database.rooms[j].names.splice(ind,1);
+		}
+		
+		if (database.powerSaveMode == true){
+			if (database.rooms[j].names.length == 0) {
+				database.rooms[j].lightOn = false;
+				database.rooms[j].brightnessChanged = true;
+			}
+		}
+	}
+	
+	if (database.rooms[i-1].names.length > 0 && database.rooms[i-1].lightOn == false) {
+			database.rooms[i-1].lightOn = true;
+			database.rooms[i-1].brightnessChanged = true;
+	}
+	
+	for (j = 0; j < database.rooms.length; j++)
+		console.log('People in room ' + (j+1) + ': ', database.rooms[j].names);
+});
+
+app.post('/master-test-powersave', function(req, res){
+	let i = req.body.r;
+	
+	//Toggles powerSaveMode
+	if (database.powerSaveMode == false)
+		database.powerSaveMode = true;
+	else if (database.powerSaveMode == true)
+		database.powerSaveMode = false;		
+	
+	//Turns off all rooms with no one in it if true
+	if (database.powerSaveMode == true){
+		for (j = 0; j < database.rooms.length; j++){
+			if (database.rooms[j].names.length == 0) {
+				database.rooms[j].lightOn = false;
+				database.rooms[j].brightnessChanged = true;
+			}
+		}
+	}
+	
+	res.render(path + '/master-test', {
+			database: database,
+			rooms: database.rooms,
+	 		room: i
+			});
+});
 
 /***************************** Server Setup *****************************/
 

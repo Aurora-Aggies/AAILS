@@ -4,6 +4,7 @@ var Room = require("./Definitions.js");
 /***************************** Global Variables *****************************/
 var rooms = [];
 var phases = ["Night", "Dawn", "Sunrise", "Overcast", "Daylight", "Mid-Afternoon", "Dusk", "Night"];
+var powerSaveMode = false;
 
 /***************************** Creating Rooms *****************************/
 
@@ -30,3 +31,4 @@ var phases = ["Night", "Dawn", "Sunrise", "Overcast", "Daylight", "Mid-Afternoon
 /***************************** Exports *****************************/
 exports.rooms = rooms;
 exports.phases = phases;
+exports.powerSaveMode = powerSaveMode;
