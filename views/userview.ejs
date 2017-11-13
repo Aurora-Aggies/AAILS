@@ -97,7 +97,7 @@
 	<div id="wrapper">
 		<!-- Back Button -->
 		<p id="back" onclick="onclick_back()"><i id="backIcon" class="pe-7s-angle-left"></i>Back</p>
-		<p></p>
+		<br></br>
 
 		<!-- Keep safe the room num :) -->
 		<span id="roomNum" style="display:none;" value="<%= room.ID %>"> </span>
@@ -109,15 +109,15 @@
 		  	<% } else{%>
 		  		style="color:red;"
 		  	<%}%>
-
 		><i id="powerIcon" class="pe-7s-power" onclick="onclick_power()"></i></p> 
-
+		<br></br>
 
 		<!-- Slider -->
 		<div id="slidecontainer">
 		  <input type="range" min="1" max="100" step="1" value="<%=room.brightness * 100%>" class="slider" id="myRange">
 		  <p> Value: <span id="valueText"></span></p>
 		</div>
+		<br></br>
 
 		<!-- Alerts -->
 		<% if (room.lightsDegraded === true) { %>
@@ -139,6 +139,8 @@
 		<% } else { %>
 		    <!-- show nada :) -->
 		<% } %>
+		<br></br>
+
 		
 		<!-- People -->
 		<div id="people">
