@@ -166,6 +166,9 @@ app.post('/onoffpower', function(req, res){
 	}
 	//console.log(database.rooms[i-1].lightOn);
 
+	//brightness has been changed since last ping
+	database.rooms[i-1].changeBrightnessChanged(true);
+
 	// render page again
 	var title = "Room " + i;
 	
@@ -201,7 +204,7 @@ app.get('/current-brightness', function(req, res){
 	let i = req.query.r;
 	let on = database.rooms[i-1].lightOn;
 	let b = database.rooms[i-1].brightness;
-	
+
 	if (on) {
 		res.send(":body:\n" + b.toString() + "\n:/body:");
 	} else {
@@ -478,11 +481,17 @@ app.post('/astronaut-detected', function(req, res){
 	for (j = 0; j < database.rooms.length; j++)
 		console.log('People in room ' + (j+1) + ': ', database.rooms[j].names);
 	
-	res.render(path + '/master-test', {
+	/*res.render(path + '/master-test', {
 			database: database,
 			rooms: database.rooms,
 	 		room: i
-			});
+			});*/
+	res.render(path + '/userview', {
+	 		name: title, 
+	 		room: database.rooms[i-1]});
+
+
+
 });
 
 app.post('/master-test-powersave', function(req, res){
