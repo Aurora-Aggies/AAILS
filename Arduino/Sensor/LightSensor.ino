@@ -84,6 +84,7 @@ void loop() {
     client.println("From: sensor");
     client.println("User-Agent: HTTPTool/1.1");
     client.println("Content-Type: application/x-www-form-urlencoded");
+    client.println(rs);
     client.println("Content-Length: " + rs.length());
     client.println("Connection: close");
     client.println();
