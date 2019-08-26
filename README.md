@@ -19,3 +19,6 @@ This GitHub repository contains the code used to build the Aruroa Aggies' Intell
 * C++
 * JavaScript
 * HTML
+
+
+[Click here to see full documentation](NASA_aails.pdf)
